@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Worship Songs Lyrics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700;800;900&family=Roboto:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --te-font:"Noto Sans Telugu",sans-serif;
+  --en-font:"Roboto",Arial,sans-serif;
+  --te-size:18px;
+  --en-size:17px;
+  --weight:900;
+  --verse-gap:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#e9e9e9;color:#111;font-weight:900}
+.page{
+  width:210mm; min-height:297mm; margin:12mm auto; padding:14mm 15mm;
+  background:#fff; box-shadow:0 2px 12px rgba(0,0,0,.14);
+  page-break-after:always;
+}
+.page:last-child{page-break-after:auto}
+.song-title-te{
+  margin:0 0 3mm;text-align:center;font-family:var(--te-font);
+  font-size:24px;line-height:1.5;font-weight:var(--weight)
+}
+.song-title-en{
+  margin:0 0 7mm;text-align:center;font-family:var(--en-font);
+  font-size:21px;line-height:1.35;font-weight:var(--weight)
+}
+.lyrics-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:12mm;
+  margin-bottom:5px;padding-bottom:4px;
+  font-family:var(--en-font);font-size:14px;font-weight:var(--weight)
+}
+.row{
+  display:grid;grid-template-columns:1fr 1fr;gap:12mm;
+  align-items:start;padding:3px 0
+}
+.row .te{
+  font-family:var(--te-font);font-size:var(--te-size);
+  line-height:1.65;font-weight:var(--weight)
+}
+.row .en{
+  font-family:var(--en-font);font-size:var(--en-size);
+  line-height:1.55;font-weight:var(--weight)
+}
+.verse{margin-top:var(--verse-gap)}
+.single-line{
+  font-family:var(--en-font);font-size:var(--en-size);
+  line-height:1.55;font-weight:var(--weight);margin:3px 0
+}
+.section{
+  margin:9px 0 4px;font-family:var(--en-font);
+  font-size:18px;font-weight:var(--weight)
+}
+
+/* Fixed top-left controls */
+#tools{
+  position:fixed;top:14px;left:14px;z-index:10000;
+  display:flex;gap:8px;align-items:center
+}
+.tool-btn{
+  border:0;border-radius:9px;padding:11px 15px;background:#111;color:#fff;
+  font:900 14px/1 var(--en-font);cursor:pointer;
+  box-shadow:0 3px 12px rgba(0,0,0,.25)
+}
+#rightTools{
+  position:fixed;top:14px;right:14px;z-index:10000;display:flex;gap:8px
+}
+
+/* Off-canvas import panel */
+#drawer{
+  position:fixed;top:0;left:0;width:min(440px,92vw);height:100vh;
+  z-index:9999;background:#fff;
+  box-shadow:8px 0 25px rgba(0,0,0,.25);
+  transform:translateX(-105%);transition:transform .25s ease;
+  overflow:auto;padding:20px 20px 30px
+}
+#drawer.open{transform:translateX(0)}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:-20px;background:#fff;padding:2px 0 14px;z-index:2;
+  font:900 20px/1.2 var(--en-font)
+}
+.drawer-actions{display:flex;gap:6px}
+.icon-btn{
+  border:0;background:#eee;border-radius:7px;width:34px;height:34px;
+  font:900 20px/1 var(--en-font);cursor:pointer
+}
+.drawer label{display:block;margin:15px 0 0;font:900 14px/1.3 var(--en-font)}
+.drawer input[type=text],.drawer textarea,.drawer select{
+  width:100%;margin-top:7px;padding:11px;border:1px solid #aaa;
+  border-radius:7px;background:#fff;font:700 14px/1.5 var(--en-font)
+}
+.drawer textarea{min-height:190px;resize:vertical}
+.drawer .toggle{margin:14px 0;font:900 14px var(--en-font)}
+.drawer .actions{display:flex;gap:8px;margin:15px 0}
+.drawer .actions button{
+  flex:1;border:0;border-radius:7px;padding:11px;background:#111;color:#fff;
+  font:900 14px var(--en-font);cursor:pointer
+}
+.drawer .actions button.secondary{background:#eee;color:#111}
+.small-note{font:700 12px/1.4 var(--en-font);opacity:.7;margin-top:5px}
+
+#settings{
+  position:fixed;top:0;right:0;width:min(360px,92vw);height:100vh;z-index:9998;
+  background:#fff;transform:translateX(105%);transition:transform .25s ease;
+  box-shadow:-8px 0 25px rgba(0,0,0,.2);overflow:auto;padding:20px
+}
+#settings.open{transform:translateX(0)}
+#settings label{display:block;margin:16px 0;font:900 13px var(--en-font)}
+#settings select,#settings input{width:100%;margin-top:6px}
+.range{display:flex;gap:10px;align-items:center}
+.range output{min-width:45px;text-align:right}
+.file-input{padding:10px 0}
+
+@media(max-width:700px){
+  .page{width:100%;margin:0;box-shadow:none;padding:18mm 5mm}
+  .row,.lyrics-head{gap:6mm}
+  .row .te{font-size:16px}.row .en{font-size:15px}
+}
+
+.song-manage{
+  display:flex;
+  justify-content:flex-end;
+  gap:7px;
+  margin-bottom:5mm;
+}
+.song-manage button{
+  border:0;
+  border-radius:7px;
+  padding:7px 11px;
+  background:#eee;
+  color:#111;
+  font:900 12px/1 var(--en-font);
+  cursor:pointer;
+}
+.song-manage button.remove{
+  background:#111;
+  color:#fff;
+}
+@media print{
+  .song-manage{display:none!important}
+}
+
+@media print{
+  body{background:#fff}
+  #tools,#rightTools,#drawer,#settings{display:none!important}
+  .page{width:210mm;min-height:297mm;margin:0;box-shadow:none;padding:14mm 15mm}
+  @page{size:A4 portrait;margin:0}
+}
+</style>
+</head>
+<body>
+
+<div id="tools">
+  <button id="openImport" class="tool-btn">📥 Add Song</button>
+  <button id="openImport2" class="tool-btn">➕ Add Another</button>
+</div>
+<div id="rightTools">
+  <button id="printBtn" class="tool-btn">🖨 Print / Save PDF</button>
+  <button id="openSettings" class="tool-btn">⚙ Typography</button>
+</div>
+
+<aside id="drawer" class="drawer" aria-label="Import Songs">
+  <div class="drawer-head">
+    <span>Import Song</span>
+    <div class="drawer-actions">
+      <button id="minImport" class="icon-btn" title="Minimize">−</button>
+      <button id="closeImport" class="icon-btn" title="Close">×</button>
+    </div>
+  </div>
+
+  <label>Song Name
+    <input id="songName" type="text" placeholder="Enter song name">
+  </label>
+
+  <div class="toggle">
+    <label style="display:inline;font-weight:900">
+      <input id="bilingual" type="checkbox"> Bilingual
+    </label>
+  </div>
+
+  <div id="singleBox">
+    <label>Lyrics
+      <textarea id="singleLyrics" placeholder="Paste lyrics here.
+Each new line is a lyric line.
+Blank lines separate verses."></textarea>
+    </label>
+    <div class="small-note">No Verse 1 / Verse 2 labels are needed. Just paste the lyrics.</div>
+  </div>
+
+  <div id="biBox" style="display:none">
+    <label>Telugu Lyrics
+      <textarea id="teLyrics" placeholder="Paste Telugu lyrics here.
+Keep the same line order as the English lyrics.
+Blank lines separate verses."></textarea>
+    </label>
+    <label>English / Transliteration
+      <textarea id="enLyrics" placeholder="Paste English / transliteration here.
+Keep the same line order as the Telugu lyrics.
+Blank lines separate verses."></textarea>
+    </label>
+  </div>
+
+  <div class="actions">
+    <button id="addSong">Add Song</button>
+    <button id="clearSong" class="secondary">Clear</button>
+  </div>
+</aside>
+
+<aside id="settings">
+  <div class="drawer-head">
+    <span>Typography</span>
+    <button id="closeSettings" class="icon-btn">×</button>
+  </div>
+  <label>Telugu Google Font
+    <select id="teFont">
+      <option>Noto Sans Telugu</option><option>Noto Serif Telugu</option>
+      <option>Anek Telugu</option><option>Mandali</option><option>NTR</option>
+      <option>Ramabhadra</option><option>Baloo Tammudu 2</option>
+      <option>Timmana</option><option>Suranna</option><option>Mallanna</option>
+      <option>Gidugu</option><option>Tenali Ramakrishna</option>
+      <option>Lakki Reddy</option><option>Ravi Prakash</option>
+    </select>
+  </label>
+  <label>English Font
+    <select id="enFont">
+      <option>Roboto</option><option>Poppins</option><option>Montserrat</option>
+      <option>Arial</option><option>Georgia</option>
+    </select>
+  </label>
+  <label>Telugu Font Size
+    <div class="range"><input id="teSize" type="range" min="14" max="30" value="18"><output id="teOut">18px</output></div>
+  </label>
+  <label>English Font Size
+    <div class="range"><input id="enSize" type="range" min="13" max="28" value="17"><output id="enOut">17px</output></div>
+  </label>
+  <label>Weight
+    <select id="weight"><option value="700">Bold</option><option value="800">Extra Bold</option><option value="900" selected>Black</option></select>
+  </label>
+  <label>Verse Spacing
+    <div class="range"><input id="gap" type="range" min="0" max="30" value="14"><output id="gapOut">14px</output></div>
+  </label>
+</aside>
+
+<script>
+const drawer=document.getElementById('drawer');
+const settings=document.getElementById('settings');
+document.getElementById('openImport').onclick=()=>drawer.classList.add('open');
+document.getElementById('openImport2').onclick=()=>{
+  document.getElementById('songName').value='';
+  document.getElementById('singleLyrics').value='';
+  document.getElementById('teLyrics').value='';
+  document.getElementById('enLyrics').value='';
+  drawer.classList.add('open');
+};
+document.getElementById('closeImport').onclick=()=>drawer.classList.remove('open');
+document.getElementById('minImport').onclick=()=>drawer.classList.remove('open');
+document.getElementById('openSettings').onclick=()=>settings.classList.add('open');
+document.getElementById('closeSettings').onclick=()=>settings.classList.remove('open');
+document.getElementById('printBtn').onclick=()=>window.print();
+
+const bilingual=document.getElementById('bilingual');
+bilingual.onchange=()=>{
+  document.getElementById('singleBox').style.display=bilingual.checked?'none':'block';
+  document.getElementById('biBox').style.display=bilingual.checked?'block':'none';
+};
+
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function groups(s){
+  return s.replace(/\r/g,'').split(/\n\s*\n/).map(x=>x.split('\n').map(y=>y.trim()).filter(Boolean)).filter(x=>x.length)
+}
+function isTe(s){return /[\u0C00-\u0C7F]/.test(s)}
+
+document.getElementById('addSong').onclick=()=>{
+  const name=document.getElementById('songName').value.trim()||'Untitled Song';
+  const page=document.createElement('section');page.className='page';
+
+  const manage=document.createElement('div');
+  manage.className='song-manage';
+  const removeBtn=document.createElement('button');
+  removeBtn.className='remove';
+  removeBtn.textContent='🗑 Remove Song';
+  removeBtn.onclick=()=>page.remove();
+  manage.appendChild(removeBtn);
+  page.appendChild(manage);
+
+  const title=document.createElement('h1');
+  title.className=isTe(name)?'song-title-te':'song-title-en';
+  title.textContent=name;page.appendChild(title);
+
+  if(bilingual.checked){
+    const tg=groups(document.getElementById('teLyrics').value);
+    const eg=groups(document.getElementById('enLyrics').value);
+    const n=Math.max(tg.length,eg.length);
+    for(let g=0;g<n;g++){
+      const verse=document.createElement('div');verse.className='verse';
+      const m=Math.max((tg[g]||[]).length,(eg[g]||[]).length);
+      for(let i=0;i<m;i++){
+        const row=document.createElement('div');row.className='row';
+        const te=document.createElement('div');te.className='te';te.textContent=(tg[g]||[])[i]||'';
+        const en=document.createElement('div');en.className='en';en.textContent=(eg[g]||[])[i]||'';
+        row.append(te,en);verse.appendChild(row);
+      }
+      page.appendChild(verse);
+    }
+  }else{
+    groups(document.getElementById('singleLyrics').value).forEach(g=>{
+      const verse=document.createElement('div');verse.className='verse';
+      g.forEach(line=>{
+        const p=document.createElement('div');
+        p.className=isTe(line)?'te':'single-line';p.textContent=line;verse.appendChild(p);
+      });
+      page.appendChild(verse);
+    });
+  }
+  document.body.appendChild(page);
+  drawer.classList.remove('open');
+};
+
+document.getElementById('clearSong').onclick=()=>{
+  ['songName','singleLyrics','teLyrics','enLyrics'].forEach(id=>document.getElementById(id).value='');
+};
+
+function loadFont(f){
+  const id='gf-'+f.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  if(document.getElementById(id))return;
+  const link=document.createElement('link');link.id=id;link.rel='stylesheet';
+  link.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(f).replace(/%20/g,'+')+':wght@400;700;800;900&display=swap';
+  document.head.appendChild(link);
+}
+function applyType(){
+  const te=document.getElementById('teFont').value,en=document.getElementById('enFont').value;
+  loadFont(te);loadFont(en);
+  document.documentElement.style.setProperty('--te-font','"'+te+'",sans-serif');
+  document.documentElement.style.setProperty('--en-font','"'+en+'",sans-serif');
+  document.documentElement.style.setProperty('--te-size',document.getElementById('teSize').value+'px');
+  document.documentElement.style.setProperty('--en-size',document.getElementById('enSize').value+'px');
+  document.documentElement.style.setProperty('--weight',document.getElementById('weight').value);
+  document.documentElement.style.setProperty('--verse-gap',document.getElementById('gap').value+'px');
+  document.getElementById('teOut').value=document.getElementById('teSize').value+'px';
+  document.getElementById('enOut').value=document.getElementById('enSize').value+'px';
+  document.getElementById('gapOut').value=document.getElementById('gap').value+'px';
+}
+document.querySelectorAll('#settings select,#settings input').forEach(x=>x.addEventListener('input',applyType));
+applyType();
+</script>
+</body>
+</html>
