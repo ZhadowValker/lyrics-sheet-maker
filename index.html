@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Worship Songs Lyrics</title>
+<title>Worship Songs Lyrics - A4 View</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700;800;900&family=Roboto:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -20,119 +20,319 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:#e9e9e9;color:#111;font-weight:900}
+
 .page{
-  width:210mm; min-height:297mm; margin:12mm auto; padding:14mm 15mm;
-  background:#fff; box-shadow:0 2px 12px rgba(0,0,0,.14);
+  width:210mm;
+  margin:12mm auto;
+  padding:14mm 15mm;
+  background:#fff;
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
   page-break-after:always;
 }
+
 .page:last-child{page-break-after:auto}
+
+/* A4 VIEW: strict physical A4 sheet on screen.
+   The sheet itself is fixed; lyrics are paginated into additional sheets. */
+body.a4-view .page{
+  width:210mm;
+  min-height:297mm;
+  max-height:297mm;
+  height:297mm;
+  margin:0 auto 18mm;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
+}
+
+body.a4-view.orientation-landscape .page{
+  min-height:210mm;
+  max-height:210mm;
+  height:210mm;
+}
+
+/* Webpage View: keep the familiar white sheet layout,
+   but remove the strict A4 height boundary. */
+body.web-view{
+  background:#e9e9e9;
+}
+
+body.web-view .page{
+  width:210mm;
+  min-height:0;
+  max-height:none;
+  height:auto;
+  margin:0 auto 18mm;
+  padding:14mm 15mm;
+  overflow:visible;
+  display:block;
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
+}
+
+body.web-view.orientation-landscape .page{
+  width:297mm;
+  min-height:0;
+  max-height:none;
+  height:auto;
+  padding:12mm 13mm;
+}
+
+body.web-view .lyrics-container{
+  flex:none;
+  overflow:visible;
+}
+
+body.web-view .single-song-columns{
+  flex:none;
+  overflow:visible;
+}
+
+body.web-view .single-song-column{
+  overflow:visible;
+}
+
+/* Lyric container takes remaining space after title */
+.lyrics-container{
+  flex:1;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
 .song-title-te{
-  margin:0 0 3mm;text-align:center;font-family:var(--te-font);
-  font-size:24px;line-height:1.5;font-weight:var(--weight)
+  margin:0 0 3mm;
+  text-align:center;
+  font-family:var(--te-font);
+  font-size:24px;
+  line-height:1.5;
+  font-weight:var(--weight);
+  flex-shrink:0;
 }
+
 .song-title-en{
-  margin:0 0 7mm;text-align:center;font-family:var(--en-font);
-  font-size:21px;line-height:1.35;font-weight:var(--weight)
+  margin:0 0 7mm;
+  text-align:center;
+  font-family:var(--en-font);
+  font-size:21px;
+  line-height:1.35;
+  font-weight:var(--weight);
+  flex-shrink:0;
 }
+
 .lyrics-head{
-  display:grid;grid-template-columns:1fr 1fr;gap:12mm;
-  margin-bottom:5px;padding-bottom:4px;
-  font-family:var(--en-font);font-size:14px;font-weight:var(--weight)
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12mm;
+  margin-bottom:5px;
+  padding-bottom:4px;
+  font-family:var(--en-font);
+  font-size:14px;
+  font-weight:var(--weight);
+  flex-shrink:0;
 }
+
 .row{
-  display:grid;grid-template-columns:1fr 1fr;gap:12mm;
-  align-items:start
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12mm;
+  align-items:start;
 }
+
 .row .te{
-  font-family:var(--te-font);font-size:var(--te-size);
-  line-height:var(--line-height);font-weight:var(--weight)
+  font-family:var(--te-font);
+  font-size:var(--te-size);
+  line-height:var(--line-height);
+  font-weight:var(--weight);
 }
+
 .row .en{
-  font-family:var(--en-font);font-size:var(--en-size);
-  line-height:var(--line-height);font-weight:var(--weight)
+  font-family:var(--en-font);
+  font-size:var(--en-size);
+  line-height:var(--line-height);
+  font-weight:var(--weight);
 }
-.verse{margin-top:var(--verse-gap)}
+
+.verse{
+  margin-top:var(--verse-gap);
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
 .single-line{
-  font-family:var(--en-font);font-size:var(--en-size);
-  line-height:var(--line-height);font-weight:var(--weight);margin:0
+  font-family:var(--en-font);
+  font-size:var(--en-size);
+  line-height:var(--line-height);
+  font-weight:var(--weight);
+  margin:0;
 }
+
 .section{
-  margin:9px 0 4px;font-family:var(--en-font);
-  font-size:18px;font-weight:var(--weight)
+  margin:9px 0 4px;
+  font-family:var(--en-font);
+  font-size:18px;
+  font-weight:var(--weight);
 }
 
 /* Fixed top-left controls */
 #tools{
-  position:fixed;top:14px;left:14px;z-index:10000;
-  display:flex;gap:8px;align-items:center
+
+  position:fixed;
+  top:70px;
+  left:14px;
+  z-index:10000;
+  display:flex;
+  gap:8px;
+  align-items:center;
+
+  /* Fixed toolbar: spacing is handled by the sheet wrapper, not here. */
 }
+
 .tool-btn{
-  border:0;border-radius:9px;padding:11px 15px;background:#111;color:#fff;
-  font:900 14px/1 var(--en-font);cursor:pointer;
-  box-shadow:0 3px 12px rgba(0,0,0,.25)
+  border:0;
+  border-radius:9px;
+  padding:11px 15px;
+  background:#111;
+  color:#fff;
+  font:900 14px/1 var(--en-font);
+  cursor:pointer;
+  box-shadow:0 3px 12px rgba(0,0,0,.25);
 }
+
 #rightTools{
-  position:fixed;top:14px;right:14px;z-index:10000;display:flex;gap:8px
+  position:fixed;
+  top:70px;
+  right:14px;
+  z-index:10000;
+  display:flex;
+  gap:8px;
 }
 
 /* Off-canvas import panel */
 #drawer{
-  position:fixed;top:0;left:0;width:min(440px,92vw);height:100vh;
-  z-index:9999;background:#fff;
+  position:fixed;
+  top:58px;
+  left:0;
+  width:min(440px,92vw);
+  height:calc(100vh - 58px);
+  z-index:9999;
+  background:#fff;
   box-shadow:8px 0 25px rgba(0,0,0,.25);
-  transform:translateX(-105%);transition:transform .25s ease;
-  overflow:auto;padding:20px 20px 30px
+  transform:translateX(-105%);
+  transition:transform .25s ease;
+  overflow:auto;
+  padding:20px 20px 30px;
 }
+
 #drawer.open{transform:translateX(0)}
+
 .drawer-head{
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:-20px;background:#fff;padding:2px 0 14px;z-index:2;
-  font:900 20px/1.2 var(--en-font)
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:-20px;
+  background:#fff;
+  padding:2px 0 14px;
+  z-index:2;
+  font:900 20px/1.2 var(--en-font);
 }
+
 .drawer-actions{display:flex;gap:6px}
+
 .icon-btn{
-  border:0;background:#eee;border-radius:7px;width:34px;height:34px;
-  font:900 20px/1 var(--en-font);cursor:pointer
+  border:0;
+  background:#eee;
+  border-radius:7px;
+  width:34px;
+  height:34px;
+  font:900 20px/1 var(--en-font);
+  cursor:pointer;
 }
+
 .drawer label{display:block;margin:15px 0 0;font:900 14px/1.3 var(--en-font)}
-.drawer input[type=text],.drawer textarea,.drawer select{
-  width:100%;margin-top:7px;padding:11px;border:1px solid #aaa;
-  border-radius:7px;background:#fff;font:700 14px/1.5 var(--en-font)
+
+.drawer input[type=text],
+.drawer textarea,
+.drawer select{
+  width:100%;
+  margin-top:7px;
+  padding:11px;
+  border:1px solid #aaa;
+  border-radius:7px;
+  background:#fff;
+  font:700 14px/1.5 var(--en-font);
 }
+
 .drawer textarea{min-height:190px;resize:vertical}
+
 .drawer .toggle{margin:14px 0;font:900 14px var(--en-font)}
+
 .drawer .actions{display:flex;gap:8px;margin:15px 0}
+
 .drawer .actions button{
-  flex:1;border:0;border-radius:7px;padding:11px;background:#111;color:#fff;
-  font:900 14px var(--en-font);cursor:pointer
+  flex:1;
+  border:0;
+  border-radius:7px;
+  padding:11px;
+  background:#111;
+  color:#fff;
+  font:900 14px var(--en-font);
+  cursor:pointer;
 }
+
 .drawer .actions button.secondary{background:#eee;color:#111}
-.small-note{font:700 12px/1.4 var(--en-font);opacity:.7;margin-top:5px}
+
+.small-note{
+  font:700 12px/1.4 var(--en-font);
+  opacity:.7;
+  margin-top:5px;
+}
 
 #settings{
-  position:fixed;top:0;right:0;width:min(360px,92vw);height:100vh;z-index:9998;
-  background:#fff;transform:translateX(105%);transition:transform .25s ease;
-  box-shadow:-8px 0 25px rgba(0,0,0,.2);overflow:auto;padding:20px
+  position:fixed;
+  top:0;
+  right:0;
+  width:min(360px,92vw);
+  height:100vh;
+  z-index:9998;
+  background:#fff;
+  transform:translateX(105%);
+  transition:transform .25s ease;
+  box-shadow:-8px 0 25px rgba(0,0,0,.2);
+  overflow:auto;
+  padding:20px;
 }
+
 #settings.open{transform:translateX(0)}
+
 #settings label{display:block;margin:16px 0;font:900 13px var(--en-font)}
+
 #settings select,#settings input{width:100%;margin-top:6px}
+
 .range{display:flex;gap:10px;align-items:center}
+
 .range output{min-width:45px;text-align:right}
+
 .file-input{padding:10px 0}
 
 @media(max-width:700px){
   .page{width:100%;margin:0;box-shadow:none;padding:18mm 5mm}
   .row,.lyrics-head{gap:6mm}
-  .row .te{font-size:16px}.row .en{font-size:15px}
+  .row .te{font-size:16px}
+  .row .en{font-size:15px}
 }
 
 .song-manage{
+  width:210mm;
+  min-width:210mm;
+  max-width:210mm;
+  margin:14px auto 8px;
   display:flex;
   justify-content:flex-end;
   gap:7px;
-  margin-bottom:5mm;
 }
+
 .song-manage button{
   border:0;
   border-radius:7px;
@@ -141,6 +341,17 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   color:#111;
   font:900 12px/1 var(--en-font);
   cursor:pointer;
+}
+
+body.orientation-landscape .song-manage{
+  width:297mm;
+  min-width:297mm;
+  max-width:297mm;
+  margin:14px auto 8px;
+}
+
+@media print{
+  .song-manage{display:none!important}
 }
 
 .song-manage button.edit{
@@ -168,7 +379,9 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   overflow:auto;
   padding:20px 20px 30px;
 }
+
 #editDrawer.open{transform:translateX(0)}
+
 #editDrawer .drawer-head{
   position:sticky;
   top:-20px;
@@ -176,11 +389,13 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   padding:2px 0 14px;
   z-index:2;
 }
+
 #editDrawer .actions{
   display:flex;
   gap:8px;
   margin:15px 0;
 }
+
 #editDrawer .actions button{
   flex:1;
   border:0;
@@ -191,10 +406,12 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   font:900 14px var(--en-font);
   cursor:pointer;
 }
+
 #editDrawer .actions button.secondary{
   background:#eee;
   color:#111;
 }
+
 #editDrawer input[type=text],
 #editDrawer textarea{
   width:100%;
@@ -205,54 +422,59 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   background:#fff;
   font:700 14px/1.5 var(--en-font);
 }
+
 #editDrawer textarea{
   min-height:190px;
   resize:vertical;
 }
+
 #editDrawer .toggle{
   margin:14px 0;
   font:900 14px var(--en-font);
 }
+
 @media print{
   #editDrawer{display:none!important}
 }
 
 @media print{
   .song-manage{display:none!important}
-}
-
-@media print{
   body{background:#fff}
   #tools,#rightTools,#drawer,#settings{display:none!important}
-  .page{width:210mm;min-height:297mm;margin:0;box-shadow:none;padding:14mm 15mm}
+  .page{
+    width:210mm;
+    min-height:297mm;
+    margin:0;
+    box-shadow:none;
+    padding:14mm 15mm;
+  }
   @page{size:A4 portrait;margin:0}
 }
 
-/* Non-bilingual songs: exactly two columns per page */
+/* Two-column layout for non-bilingual songs */
 .single-song-columns{
   display:grid;
   grid-template-columns:1fr 1fr;
   column-gap:14mm;
-  height:235mm;
+  flex:1;
+  overflow:hidden;
 }
+
 .single-song-column{
   min-width:0;
   overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
+
 .single-song-column .verse{
   break-inside:avoid;
   page-break-inside:avoid;
 }
-.single-song-column .single-line{margin:2px 0}
-@media print{
-  .single-song-flow{
-    column-count:2;
-    column-gap:14mm;
-    column-fill:auto;
-    height:235mm;
-  }
-}
 
+.single-song-column .single-line{
+  margin:2px 0;
+}
 
 .separator-option{
   display:flex!important;
@@ -260,18 +482,23 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   align-items:center;
   gap:8px;
 }
+
 .separator-option span{flex:1}
+
 .separator-option input{width:auto!important;margin:0!important}
+
 .separator-option small{
   width:100%;
   font-size:11px;
   opacity:.65;
 }
+
 .show-verse-separators .verse{
   position:relative;
   padding-top:8px;
   margin-top:var(--verse-gap);
 }
+
 .show-verse-separators .verse::before{
   content:"";
   display:block;
@@ -280,14 +507,15 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   background:#c8c8c8;
   margin-bottom:7px;
 }
+
 .show-verse-separators .verse:first-child{
   margin-top:0;
   padding-top:0;
 }
+
 .show-verse-separators .verse:first-child::before{
   display:none;
 }
-
 
 .font-status{
   display:block;
@@ -295,6 +523,7 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   font:700 11px/1.3 var(--en-font);
   opacity:.65;
 }
+
 #settings input[list]{
   width:100%;
   margin-top:6px;
@@ -306,10 +535,11 @@ body{background:#e9e9e9;color:#111;font-weight:900}
 
 #menuTools{
   position:fixed;
-  top:14px;
+  top:70px;
   right:14px;
   z-index:10000;
 }
+
 .hamburger-btn{
   width:46px;
   height:46px;
@@ -324,12 +554,14 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   cursor:pointer;
   box-shadow:0 3px 12px rgba(0,0,0,.25);
 }
+
 .hamburger-btn span{
   width:21px;
   height:2px;
   background:#fff;
   border-radius:2px;
 }
+
 .side-menu{
   position:fixed;
   top:0;
@@ -343,7 +575,9 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   transition:transform .25s ease;
   padding:20px;
 }
+
 .side-menu.open{transform:translateX(0)}
+
 .side-menu-head{
   display:flex;
   align-items:center;
@@ -352,12 +586,14 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   border-bottom:1px solid #ddd;
   font:900 20px/1 var(--en-font);
 }
+
 .menu-items{
   display:flex;
   flex-direction:column;
   gap:8px;
   margin-top:16px;
 }
+
 .menu-item{
   width:100%;
   border:0;
@@ -369,15 +605,17 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   font:900 14px var(--en-font);
   cursor:pointer;
 }
+
 .menu-item:hover{background:#e4e4e4}
+
 @media print{
   #menuTools,#sideMenu{display:none!important}
 }
 
-/* Typography panel close-button fix */
 #settings{
   z-index:10003 !important;
 }
+
 #settings .drawer-head{
   position:sticky;
   top:-20px;
@@ -388,6 +626,7 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   background:#fff !important;
   padding:2px 0 16px !important;
 }
+
 #settings .icon-btn{
   display:flex !important;
   align-items:center !important;
@@ -406,44 +645,878 @@ body{background:#e9e9e9;color:#111;font-weight:900}
   font:900 24px/1 Arial,sans-serif !important;
   cursor:pointer !important;
 }
+
 #settings .icon-btn:hover{background:#ddd !important}
 
-/* Page visibility / orientation */
 body.orientation-landscape .page{
   width:297mm;
-  min-height:210mm;
-}
-body.orientation-landscape .single-song-columns{
-  height:155mm;
-}
-body.orientation-landscape .page{
   padding:12mm 13mm;
 }
+
+body.a4-view.orientation-landscape .page{
+  width:297mm;
+  min-height:210mm;
+  max-height:210mm;
+  height:210mm;
+}
+
+body.a4-view.orientation-landscape .page{
+  min-height:210mm;
+  max-height:210mm;
+}
+
 @media print{
   body.orientation-landscape .page{
     width:297mm;
     min-height:210mm;
     padding:12mm 13mm;
   }
-  body.orientation-landscape .single-song-columns{
-    height:155mm;
-  }
   @page{
-    size: landscape;
+    size:landscape;
     margin:0;
   }
 }
+
+body.a4-view #viewModeBtn{
+  background:#444;
+}
+
+body.web-view #webViewBtn{
+  background:#444;
+}
+
+body.a4-view .page{
+  transform:none;
+}
+
+body.full-view #tools,
+body.full-view #sideMenu,
+body.full-view #drawer,
+body.full-view #settings,
+body.full-view #editDrawer,
+body.full-view .song-manage{
+  display:none !important;
+}
+
+body.full-view{
+  background:#e9e9e9;
+}
+
+body.full-view .page{
+  margin:12mm auto;
+  min-height:auto;
+  max-height:none;
+}
+
+#fullViewBtn.active{
+  background:#444;
+}
+
+body.a4-view{
+  background:#e9e9e9;
+}
+
+body.a4-view .page{
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
+}
+
+body.a4-view #viewModeBtn{
+  background:#111;
+}
+
+@media print{
+  #viewModeBtn,#webViewBtn{display:none!important}
+}
+
+body.a4-view{
+  min-width:0 !important;
+  overflow-x:auto;
+}
+
+body.a4-view .page{
+  flex:none;
+}
+
+/* A4 continuation marker */
+.a4-continue-label{
+  display:none;
+  position:absolute;
+  right:8mm;
+  bottom:5mm;
+  font:800 9px/1 var(--en-font);
+  color:#555;
+  letter-spacing:.2px;
+  pointer-events:none;
+}
+
+body.a4-view .a4-continue-label{
+  display:block;
+}
+
+body.a4-view .page{
+  position:relative;
+}
+
+
+/* View controls live directly below the hamburger, separate from the
+   slide-out menu. */
+.view-buttons-under-menu{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:6px;
+  margin-top:8px;
+  width:max-content;
+}
+
+.view-buttons-under-menu .tool-btn{
+  white-space:nowrap;
+  width:max-content;
+}
+
+@media (max-width:700px){
+  .view-buttons-under-menu{
+    gap:5px;
+    margin-top:6px;
+  }
+}
+
+
+/* Compact square view controls under the hamburger */
+.view-buttons-under-menu{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  margin-top:8px;
+  width:42px;
+}
+
+.view-icon-btn{
+  width:42px;
+  height:42px;
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border:0;
+  border-radius:9px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 3px 9px rgba(0,0,0,.22);
+  transition:transform .12s ease, background .12s ease;
+}
+
+.view-icon-btn:hover{
+  transform:translateY(-1px);
+  background:#222;
+}
+
+.view-icon-btn.active{
+  background:#444;
+}
+
+
+/* Compact Add Song button */
+.square-add-btn{
+  width:42px;
+  height:42px;
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border:0;
+  border-radius:9px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font:900 28px/1 Arial,sans-serif;
+  cursor:pointer;
+  box-shadow:0 3px 9px rgba(0,0,0,.22);
+}
+
+.square-add-btn:hover{
+  background:#222;
+}
+
+/* Keep view buttons truly icon-only even if other button styles exist. */
+.view-icon-btn{
+  font-size:0 !important;
+  line-height:1 !important;
+}
+
+.view-icon-btn::before{
+  display:block;
+  font-size:19px;
+  line-height:1;
+}
+
+/* Full View: retain the compact control stack so Full View can be exited
+   by clicking the same control; never expose text labels. */
+body.full-view #menuTools{
+  display:block !important;
+}
+
+body.full-view #viewButtonsUnderMenu{
+  display:flex !important;
+}
+
+body.full-view #tools{
+  display:none !important;
+}
+
+body.full-view .view-icon-btn{
+  display:flex !important;
+}
+
+
+.view-buttons-under-menu .view-icon-btn{
+  display:flex;
+  width:42px;
+  min-width:42px;
+  max-width:42px;
+}
+
+
+/* Browser controls are attached to the Import Song Lyrics drawer.
+   The entire group (+, folder, search and song browser) moves horizontally
+   with the drawer when it opens, and returns when the drawer closes. */
+#tools{
+  transition:transform .25s ease;
+  z-index:10001;
+  will-change:transform;
+}
+
+body.import-drawer-open #tools{
+  transform:translateX(min(440px, 92vw));
+}
+
+body.import-drawer-open #tools .square-add-btn,
+body.import-drawer-open #tools .square-folder-btn{
+  box-shadow:3px 3px 12px rgba(0,0,0,.25);
+}
+
+@media (max-width:700px){
+  body.import-drawer-open #tools{
+    transform:translateX(min(92vw, 440px));
+  }
+}
+
+
+
+/* Since the header is part of normal document flow, the fixed toolbars
+   remain independent and do not turn the header into a sticky bar. */
+
+
+/* Lyrics Sheet Creator — compact logo lockup above the hamburger */
+#appTitle{
+  position:fixed;
+  top:8px;
+  left:14px;
+  z-index:10001;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  pointer-events:none;
+  color:#111;
+  user-select:none;
+}
+
+#appTitle .brand-mark{
+  width:38px;
+  height:38px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#111;
+  color:#fff;
+  font:900 27px/1 Georgia,serif;
+  box-shadow:0 3px 8px rgba(0,0,0,.18);
+}
+
+#appTitle .brand-name{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  font-family:var(--en-font);
+  font-weight:900;
+  font-size:10px;
+  line-height:.92;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+
+#appTitle .brand-name span:first-child{
+  font-size:14px;
+  letter-spacing:.5px;
+}
+
+#appTitle .brand-name span:nth-child(2){
+  font-size:12px;
+}
+
+#appTitle .brand-name span:last-child{
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+@media (max-width:700px){
+  #appTitle{
+    top:8px;
+    left:10px;
+    gap:5px;
+  }
+
+  #appTitle .brand-mark{
+    width:34px;
+    height:34px;
+    font-size:25px;
+  }
+
+  #appTitle .brand-name span:first-child{font-size:12px}
+  #appTitle .brand-name span:nth-child(2){font-size:11px}
+  #appTitle .brand-name span:last-child{font-size:9px}
+}
+
+
+/* Local song-folder browser */
+.square-folder-btn{
+  width:42px;
+  height:42px;
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border:0;
+  border-radius:9px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow:0 3px 9px rgba(0,0,0,.22);
+}
+
+.square-folder-btn:hover{
+  background:#222;
+}
+
+.folder-search-wrap{
+  width:230px;
+  margin-top:6px;
+}
+
+.folder-search-wrap input{
+  width:100%;
+  box-sizing:border-box;
+  padding:9px 11px;
+  border:1px solid #aaa;
+  border-radius:8px;
+  background:#fff;
+  color:#111;
+  font:700 13px/1.2 var(--en-font);
+  outline:none;
+}
+
+.folder-search-wrap input:focus{
+  border-color:#555;
+}
+
+.folder-results{
+  width:260px;
+  max-height:300px;
+  overflow:auto;
+  margin-top:6px;
+  padding:5px;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(0,0,0,.22);
+}
+
+.folder-result{
+  width:100%;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  padding:9px 10px;
+  text-align:left;
+  cursor:pointer;
+  font:800 13px/1.2 var(--en-font);
+  color:#111;
+}
+
+.folder-result:hover{
+  background:#eee;
+}
+
+.folder-empty{
+  padding:10px;
+  color:#666;
+  font:700 12px/1.4 var(--en-font);
+}
+
+body.import-drawer-open #tools{
+  transform:translateX(min(440px, 92vw));
+}
+
+@media (max-width:700px){
+  .folder-search-wrap{width:200px}
+  .folder-results{width:225px}
+}
+
+
+/* Persistent local-folder browser and transliteration search */
+#tools{
+  flex-direction:column;
+  align-items:flex-start;
+  gap:7px;
+}
+
+#tools .square-add-btn,
+#tools .square-folder-btn{
+  flex:0 0 auto;
+}
+
+.folder-search-wrap{
+  width:235px;
+  margin:0;
+}
+
+.folder-search-wrap input{
+  width:100%;
+  box-sizing:border-box;
+  padding:9px 11px;
+  border:1px solid #aaa;
+  border-radius:8px;
+  background:#fff;
+  color:#111;
+  font:700 12px/1.2 var(--en-font);
+  outline:none;
+}
+
+.folder-search-wrap input:focus{
+  border-color:#555;
+}
+
+.folder-results{
+  width:255px;
+  max-height:320px;
+  overflow:auto;
+  margin-top:0;
+  padding:5px;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(0,0,0,.22);
+}
+
+.folder-result{
+  width:100%;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  padding:8px 10px;
+  text-align:left;
+  cursor:pointer;
+  font:800 12px/1.25 var(--en-font);
+  color:#111;
+}
+
+.folder-result:hover{background:#eee}
+
+.folder-result .result-translit{
+  display:block;
+  margin-top:2px;
+  font:700 10px/1.2 var(--en-font);
+  opacity:.58;
+}
+
+.folder-status{
+  display:block;
+  width:255px;
+  padding:4px 8px;
+  box-sizing:border-box;
+  font:700 10px/1.25 var(--en-font);
+  opacity:.65;
+}
+
+@media (max-width:700px){
+  .folder-search-wrap{width:200px}
+  .folder-results{width:220px}
+  .folder-status{width:220px}
+}
+
+
+.song-title-translit{
+  margin:-1mm 0 4mm;
+  text-align:center;
+  font-family:var(--en-font);
+  font-size:15px;
+  line-height:1.25;
+  font-weight:800;
+  opacity:.72;
+  flex-shrink:0;
+}
+
+
+/* Static folder picker: always visible directly below search */
+#tools{
+  flex-direction:column;
+  align-items:flex-start;
+}
+
+#folderSearchWrap{
+  order:1;
+}
+
+#browseFolderBtn{
+  order:2;
+  flex:0 0 auto;
+}
+
+#folderResults{
+  order:3;
+}
+
+#browseFolderBtn{
+  position:relative;
+  transform:none !important;
+}
+
+
+/* Song browser block: + and folder on one row, search underneath,
+   then the persistent folder explorer/results. */
+#tools{
+  position:fixed;
+  top:70px;
+  left:14px;
+  z-index:10000;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:7px;
+  width:255px;
+}
+
+.browser-top-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.folder-search-wrap{
+  width:255px;
+  margin:0;
+  display:block !important;
+}
+
+.folder-search-wrap input{
+  width:100%;
+  box-sizing:border-box;
+}
+
+.folder-results{
+  width:255px;
+  max-height:320px;
+  overflow:auto;
+  margin:0;
+}
+
+/* Horizontal drawer movement is defined above. */
+
+@media (max-width:700px){
+  #tools{
+    top:70px;
+    left:10px;
+    width:220px;
+  }
+
+  .folder-search-wrap,
+  .folder-results{
+    width:220px;
+  }
+}
+
+
+/* Persistent folder contents below the search bar */
+#folderResults{
+  display:block;
+  width:255px;
+  max-height:360px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  margin:0;
+  padding:5px;
+  box-sizing:border-box;
+}
+
+#folderResults[hidden]{
+  display:none;
+}
+
+.folder-result{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  padding:8px 10px;
+  text-align:left;
+  cursor:pointer;
+  font:800 12px/1.25 var(--en-font);
+  color:#111;
+}
+
+.folder-result:hover{
+  background:#eee;
+}
+
+.folder-result .result-translit{
+  display:block;
+  margin-top:2px;
+  font:700 10px/1.2 var(--en-font);
+  opacity:.58;
+}
+
+.folder-status{
+  display:block;
+  padding:5px 8px 7px;
+  font:800 10px/1.2 var(--en-font);
+  opacity:.6;
+}
+
+
+/* Sheet zoom controls */
+.zoom-control{
+  font-size:24px !important;
+  line-height:1 !important;
+  font-family:Arial,sans-serif !important;
+}
+
+:root{
+  --sheet-zoom:1;
+}
+
+/* Zoom changes the sheet itself, not the surrounding toolbar. */
+.page{
+  zoom:var(--sheet-zoom);
+}
+
+@media print{
+  .page{
+    zoom:1 !important;
+  }
+}
+
+
+.folder-picker-wrap{
+  position:relative;
+  display:flex;
+}
+
+.folder-picker-menu{
+  position:absolute;
+  top:48px;
+  left:0;
+  width:210px;
+  padding:6px;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 5px 20px rgba(0,0,0,.25);
+  z-index:10020;
+}
+
+.folder-picker-menu[hidden]{display:none}
+
+.folder-picker-menu button{
+  display:block;
+  width:100%;
+  border:0;
+  border-radius:7px;
+  padding:10px 11px;
+  background:#fff;
+  color:#111;
+  text-align:left;
+  font:800 12px/1.2 var(--en-font);
+  cursor:pointer;
+}
+
+.folder-picker-menu button:hover{
+  background:#eee;
+}
+
+
+.verse-number{
+  display:block;
+  margin-bottom:4px;
+  font:900 0.9em/1 var(--en-font);
+  opacity:.78;
+}
+
+.orientation-control{
+  font-size:22px !important;
+  line-height:1 !important;
+  font-family:Arial,sans-serif !important;
+}
+
+
+.orientation-control,
+.verse-separator-control{
+  font-size:22px !important;
+  line-height:1 !important;
+  font-family:Arial,sans-serif !important;
+}
+
+.verse-separator-control.active,
+.orientation-control.active{
+  background:#444 !important;
+}
+
+
+.akar-icon,
+.view-icon-btn i[class^="ai-"],
+.menu-item i[class^="ai-"],
+.song-manage i[class^="ai-"],
+.folder-picker-menu i[class^="ai-"]{
+  display:inline-block;
+  font-size:21px;
+  line-height:1;
+  vertical-align:middle;
+}
+
+.view-icon-btn i[class^="ai-"]{
+  font-size:22px;
+}
+
+.menu-item i[class^="ai-"]{
+  font-size:19px;
+}
+
+.song-manage i[class^="ai-"]{
+  font-size:16px;
+}
+
+.folder-picker-menu i[class^="ai-"]{
+  font-size:18px;
+}
+
+
+.material-icons{
+  font-family:'Material Icons';
+  font-weight:normal;
+  font-style:normal;
+  font-size:22px;
+  line-height:1;
+  letter-spacing:normal;
+  text-transform:none;
+  display:inline-block;
+  white-space:nowrap;
+  word-wrap:normal;
+  direction:ltr;
+  -webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:'liga';
+  vertical-align:middle;
+}
+
+.view-icon-btn .material-icons{
+  font-size:22px;
+}
+
+.menu-item .material-icons{
+  font-size:20px;
+}
+
+.song-manage .material-icons{
+  font-size:17px;
+}
+
+.folder-picker-menu .material-icons{
+  font-size:19px;
+}
+
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
-<body>
+<body class="web-view">
+
+
 
 <div id="tools">
-  <button id="openImport" class="tool-btn">📥 Add Song</button>
+  <div class="browser-top-row">
+    <button id="openImport"
+            class="square-add-btn"
+            title="Add song lyrics"
+            aria-label="Add song lyrics">+</button>
+
+    <div class="folder-picker-wrap">
+      <button id="browseFolderBtn"
+              class="square-folder-btn"
+              title="Song Library / Upload Folder"
+              aria-label="Song Library / Upload Folder"
+              aria-expanded="false"><span class="material-icons">folder</span></button>
+
+      <div id="folderPickerMenu" class="folder-picker-menu" hidden>
+        <button id="githubLibraryBtn" type="button"><span class="material-icons">cloud</span> GitHub Song Library</button>
+        <button id="uploadFolderBtn" type="button"><span class="material-icons">folder</span> Upload Local Folder</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="folderSearchWrap" class="folder-search-wrap">
+    <input id="folderSearch"
+           type="search"
+           placeholder="Search songs / transliteration..."
+           aria-label="Search songs and transliteration">
+  </div>
+
+  <div id="folderResults" class="folder-results" hidden></div>
 </div>
+
+<div id="appTitle" aria-label="Lyrics Sheet Creator">
+  <div class="brand-mark" aria-hidden="true">♫</div>
+  <div class="brand-name">
+    <span>Lyrics</span>
+    <span>Sheet</span>
+    <span>Creator</span>
+  </div>
+</div>
+
+<input id="folderInputFallback"
+       type="file"
+       webkitdirectory
+       directory
+       multiple
+       accept=".txt,text/plain"
+       hidden>
+
 <div id="menuTools">
   <button id="hamburgerBtn" class="hamburger-btn" aria-label="Open menu" title="Menu">
     <span></span><span></span><span></span>
   </button>
+
+  <div id="viewButtonsUnderMenu" class="view-buttons-under-menu" aria-label="View controls">
+    <button id="fullViewBtn" class="view-icon-btn" title="Full View" aria-label="Full View"><span class="material-icons">fullscreen</span></button>
+    <button id="viewModeBtn" class="view-icon-btn" title="A4 View" aria-label="A4 View"><span class="material-icons">description</span></button>
+    <button id="webViewBtn" class="view-icon-btn" title="Webpage View" aria-label="Webpage View"><span class="material-icons">language</span></button>
+    <button id="zoomInBtn" class="view-icon-btn zoom-control" title="Zoom In" aria-label="Zoom In"><span class="material-icons">add</span></button>
+    <button id="zoomOutBtn" class="view-icon-btn zoom-control" title="Zoom Out" aria-label="Zoom Out"><span class="material-icons">remove</span></button>
+    <button id="orientationBtn" class="view-icon-btn orientation-control"
+            title="Page Orientation: Portrait — click to switch"
+            aria-label="Page Orientation: Portrait — click to switch"><span class="material-icons">screen_rotation</span></button>
+    <button id="verseSeparatorBtn" class="view-icon-btn verse-separator-control"
+            title="Verse Separator: Off — click to turn on"
+            aria-label="Verse Separator: Off — click to turn on"><span class="material-icons">format_list_bulleted</span></button>
+  </div>
 </div>
 
 <aside id="sideMenu" class="side-menu" aria-label="Main menu">
@@ -452,11 +1525,10 @@ body.orientation-landscape .page{
     <button id="closeMenu" class="icon-btn" title="Close">×</button>
   </div>
   <div class="menu-items">
-    <button id="menuPrint" class="menu-item">🖨 <span>Print / Save PDF</span></button>
-    <button id="menuTypography" class="menu-item">⚙ <span>Typography</span></button>
+    <button id="menuPrint" class="menu-item"><span class="material-icons">print</span> <span>Print / Save PDF</span></button>
+    <button id="menuTypography" class="menu-item"><span class="material-icons">tune</span> <span>Typography</span></button>
   </div>
 </aside>
-
 
 <aside id="editDrawer" class="drawer" aria-label="Edit Song">
   <div class="drawer-head">
@@ -498,9 +1570,9 @@ body.orientation-landscape .page{
   </div>
 </aside>
 
-<aside id="drawer" class="drawer" aria-label="Import Songs">
+<aside id="drawer" class="drawer" aria-label="Import Song Lyricss">
   <div class="drawer-head">
-    <span>Import Song</span>
+    <span>Import Song Lyrics</span>
     <div class="drawer-actions">
       <button id="minImport" class="icon-btn" title="Minimize">−</button>
       <button id="closeImport" class="icon-btn" title="Close">×</button>
@@ -540,7 +1612,7 @@ Blank lines separate verses."></textarea>
   </div>
 
   <div class="actions">
-    <button id="addSong">Add Song</button>
+    <button id="addSong"><span class="material-icons">add</span> Add Song</button>
     <button id="clearSong" class="secondary">Clear</button>
   </div>
 </aside>
@@ -564,38 +1636,46 @@ Blank lines separate verses."></textarea>
     <datalist id="teFontList"></datalist>
     <small class="font-status" id="teFontStatus">Loading online Google Fonts…</small>
   </label>
+  
   <label>English Google Font — Online
     <input id="enFont" list="enFontList" value="Roboto"
       placeholder="Search Google Fonts..." autocomplete="off">
     <datalist id="enFontList"></datalist>
     <small class="font-status" id="enFontStatus">Online font loading enabled</small>
   </label>
+  
   <label>Telugu Font Size
     <div class="range"><input id="teSize" type="range" min="14" max="30" value="18"><output id="teOut">18px</output></div>
   </label>
+  
   <label>English Font Size
     <div class="range"><input id="enSize" type="range" min="13" max="28" value="17"><output id="enOut">17px</output></div>
   </label>
+  
   <label>Weight
     <select id="weight"><option value="700">Bold</option><option value="800">Extra Bold</option><option value="900" selected>Black</option></select>
   </label>
+  
   <label>Verse Spacing
     <div class="range"><input id="gap" type="range" min="0" max="30" value="14"><output id="gapOut">14px</output></div>
   </label>
+  
   <label>Line Spacing
     <div class="range"><input id="lineGap" type="range" min="1" max="2.5" step="0.1" value="1.55"><output id="lineGapOut">1.55×</output></div>
   </label>
+  
   <label class="separator-option">
     <span>Verse Separator Line</span>
     <input id="verseSeparator" type="checkbox">
     <small>Show a line between verses</small>
   </label>
+
+  <label class="separator-option">
+    <span>Show Verse Numbers</span>
+    <input id="showVerseNumbers" type="checkbox">
+    <small>Show detected 1, 2, 3… verse numbers</small>
+  </label>
 </aside>
-
-
-
-
-
 
 <script>
 (() => {
@@ -605,22 +1685,921 @@ Blank lines separate verses."></textarea>
 
   const $ = id => document.getElementById(id);
 
-  $('openImport').onclick = () => {
-    // Always start a fresh song. Do not retain cached/previous lyrics.
+  function isA4View() {
+    return document.body.classList.contains('a4-view');
+  }
+
+  function isWebView() {
+    return document.body.classList.contains('web-view');
+  }
+
+  function isLandscape() {
+    return document.body.classList.contains('orientation-landscape');
+  }
+
+  function rerenderAllSongsForView() {
+    // Capture each unique song before removing old sheets
+    const songMap = new Map();
+    document.querySelectorAll('.page').forEach(page => {
+      if (!page._songData) return;
+      const key = JSON.stringify(page._songData);
+      if (!songMap.has(key)) songMap.set(key, structuredClone(page._songData));
+    });
+
+    // Remove old sheets and controls
+    document.querySelectorAll('.song-manage').forEach(el => el.remove());
+    document.querySelectorAll('.page').forEach(el => el.remove());
+
+    // Re-render each song with current view settings
+    songMap.forEach(songData => renderSong(songData));
+    requestAnimationFrame(() => updateA4ContinuationLabels());
+  }
+
+  function clearSpecialViews() {
+    document.body.classList.remove('full-view');
+    $('fullViewBtn').classList.remove('active');
+    $('fullViewBtn').textContent = '⛶ Full View';
+  }
+
+  // A4 View: strict physical A4 sheets with pagination.
+  // Default view: Webpage View
+  document.body.classList.add('web-view');
+  $('webViewBtn').classList.add('active');
+
+  $('viewModeBtn').onclick = () => {
+    clearSpecialViews();
+    document.body.classList.remove('web-view');
+    document.body.classList.add('a4-view');
+    $('viewModeBtn').classList.add('active');
+    $('webViewBtn').classList.remove('active');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => rerenderAllSongsForView());
+    });
+  };
+
+  // Webpage View: retain the white sheet presentation and two-column layout,
+  // but remove the fixed A4 height boundary. Each song can continue vertically.
+  $('webViewBtn').onclick = () => {
+    clearSpecialViews();
+    document.body.classList.remove('a4-view');
+    document.body.classList.add('web-view');
+    $('viewModeBtn').classList.remove('active');
+    $('webViewBtn').classList.add('active');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => rerenderAllSongsForView());
+    });
+  };
+
+
+  // Sheet zoom: changes the rendered sheet size while leaving the controls
+  // and browser toolbar at their normal size.
+  let sheetZoom = 1;
+
+  function applySheetZoom(){
+    document.documentElement.style.setProperty('--sheet-zoom', sheetZoom.toFixed(2));
+  }
+
+  $('zoomInBtn').onclick = () => {
+    sheetZoom = Math.min(1.6, +(sheetZoom + 0.1).toFixed(2));
+    applySheetZoom();
+  };
+
+  $('zoomOutBtn').onclick = () => {
+    sheetZoom = Math.max(0.6, +(sheetZoom - 0.1).toFixed(2));
+    applySheetZoom();
+  };
+
+  // Page orientation shortcut.
+  // The auto-rotate icon stays the same; the tooltip reports the current
+  // orientation and clicking switches Portrait <-> Landscape.
+  function updateOrientationButton(){
+    const landscape = isLandscape();
+    const btn = $('orientationBtn');
+
+    btn.innerHTML = '<span class="material-icons">screen_rotation</span>';
+    btn.title = landscape
+      ? 'Auto Rotate / Page Orientation: Landscape — click for Portrait'
+      : 'Auto Rotate / Page Orientation: Portrait — click for Landscape';
+    btn.setAttribute('aria-label', btn.title);
+    btn.classList.toggle('active', landscape);
+  }
+
+  $('orientationBtn').onclick = () => {
+    const select = $('pageOrientation');
+    select.value = isLandscape() ? 'portrait' : 'landscape';
+    applyOrientation();
+    updateOrientationButton();
+  };
+
+  // Verse separator shortcut.
+  // This controls the same Typography setting, so both controls stay in sync.
+  function updateVerseSeparatorButton(){
+    const enabled = $('verseSeparator').checked;
+    const btn = $('verseSeparatorBtn');
+
+    btn.title = enabled
+      ? 'Verse Separator: On — click to turn off'
+      : 'Verse Separator: Off — click to turn on';
+    btn.setAttribute('aria-label', btn.title);
+    btn.classList.toggle('active', enabled);
+  }
+
+  $('verseSeparatorBtn').onclick = () => {
+    // The Typography controls use the shared applyType() function.
+    // Calling it directly is important because the settings panel listens
+    // to the input event, not the change event.
+    $('verseSeparator').checked = !$('verseSeparator').checked;
+
+    if (typeof applyType === 'function') {
+      applyType();
+    } else {
+      document.body.classList.toggle(
+        'show-verse-separators',
+        $('verseSeparator').checked
+      );
+    }
+
+    updateVerseSeparatorButton();
+  };
+
+  updateOrientationButton();
+  updateVerseSeparatorButton();
+
+  $('fullViewBtn').onclick = () => {
+    document.body.classList.toggle('full-view');
+    $('fullViewBtn').classList.toggle('active', document.body.classList.contains('full-view'));
+    $('fullViewBtn').textContent = document.body.classList.contains('full-view')
+      ? '⛶ Exit Full View'
+      : '⛶ Full View';
+  };
+
+
+
+  // Persistent folder state. The directory handle is stored in IndexedDB,
+  // so the user normally selects the folder only once.
+  const FOLDER_DB = 'lyrics-sheet-creator-db';
+  const FOLDER_STORE = 'settings';
+  const FOLDER_KEY = 'lyrics-folder-handle';
+
+  function openFolderDB(){
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open(FOLDER_DB,1);
+      req.onupgradeneeded=()=>req.result.createObjectStore(FOLDER_STORE);
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  async function saveFolderHandle(handle){
+    if (!window.indexedDB) return;
+    try{
+      const db=await openFolderDB();
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(FOLDER_STORE,'readwrite');
+        tx.objectStore(FOLDER_STORE).put(handle,FOLDER_KEY);
+        tx.oncomplete=resolve;
+        tx.onerror=()=>reject(tx.error);
+      });
+      db.close();
+    }catch(err){ console.warn('Could not save folder handle',err); }
+  }
+
+  async function getFolderHandle(){
+    if (!window.indexedDB) return null;
+    try{
+      const db=await openFolderDB();
+      const handle=await new Promise((resolve,reject)=>{
+        const tx=db.transaction(FOLDER_STORE,'readonly');
+        const req=tx.objectStore(FOLDER_STORE).get(FOLDER_KEY);
+        req.onsuccess=()=>resolve(req.result || null);
+        req.onerror=()=>reject(req.error);
+      });
+      db.close();
+      return handle;
+    }catch(err){ return null; }
+  }
+
+  async function clearFolderHandle(){
+    try{
+      const db=await openFolderDB();
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(FOLDER_STORE,'readwrite');
+        tx.objectStore(FOLDER_STORE).delete(FOLDER_KEY);
+        tx.oncomplete=resolve;
+        tx.onerror=()=>reject(tx.error);
+      });
+      db.close();
+    }catch(err){}
+  }
+
+  async function permissionForHandle(handle){
+    if (!handle || !handle.queryPermission) return true;
+    let permission=await handle.queryPermission({mode:'read'});
+    if (permission!=='granted' && handle.requestPermission){
+      permission=await handle.requestPermission({mode:'read'});
+    }
+    return permission==='granted';
+  }
+
+  async function readFolderHandle(handle){
+    const files=[];
+    for await (const [name,entry] of handle.entries()){
+      if(entry.kind==='file' && /\.txt$/i.test(name)){
+        const file=await entry.getFile();
+        const text=(await file.text()).replace(/^\uFEFF/,'').trim();
+        const telugu=hasTelugu(text);
+        const translitName=hasTelugu(handle.name || '') ? transliterateTelugu(handle.name) : '';
+        const songName=normalizeSongFileName(name);
+        files.push({
+          file,
+          songName,
+          translitName: hasTelugu(songName) ? transliterateTelugu(songName) : '',
+          translitLyrics: telugu ? transliterateTelugu(text) : '',
+          searchText: `${songName} ${hasTelugu(songName)?transliterateTelugu(songName):''} ${text} ${telugu?transliterateTelugu(text):''}`.toLowerCase()
+        });
+      }
+    }
+    return files.sort((a,b)=>a.songName.localeCompare(b.songName,undefined,{numeric:true,sensitivity:'base'}));
+  }
+
+  async function restoreSavedFolder(){
+    const handle=await getFolderHandle();
+    if(!handle) return false;
+    try{
+      if(!(await permissionForHandle(handle))) return false;
+      localSongFiles=await readFolderHandle(handle);
+      renderFolderResults($('folderSearch').value || '');
+      return true;
+    }catch(err){
+      console.warn('Saved folder is no longer available',err);
+      return false;
+    }
+  }
+
+
+  const GITHUB_LIBRARY = {
+    owner: 'ZhadowValker',
+    repo: 'lyrics-sheet-maker',
+    branch: 'main',
+    root: 'songs'
+  };
+
+  let githubSongFiles = [];
+
+  async function githubApi(path){
+    const url = `https://api.github.com/repos/${GITHUB_LIBRARY.owner}/${GITHUB_LIBRARY.repo}/contents/${path}?ref=${encodeURIComponent(GITHUB_LIBRARY.branch)}`;
+    const response = await fetch(url, {
+      headers: { 'Accept': 'application/vnd.github+json' }
+    });
+    if(!response.ok) throw new Error(`GitHub API ${response.status}`);
+    return response.json();
+  }
+
+  async function scanGitHubSongs(path){
+    const entries = await githubApi(path);
+    const files = [];
+
+    for(const entry of entries){
+      if(entry.type === 'dir'){
+        const nested = await scanGitHubSongs(entry.path);
+        files.push(...nested);
+      }else if(entry.type === 'file' && /\.txt$/i.test(entry.name)){
+        const songName = entry.name.replace(/\.txt$/i,'').trim();
+        files.push({
+          songName,
+          path: entry.path,
+          downloadUrl: entry.download_url,
+          folderPath: entry.path.split('/').slice(1,-1).join('/'),
+          searchText: songName.toLowerCase()
+        });
+      }
+    }
+    return files;
+  }
+
+  function renderGitHubSongResults(query=''){
+    const results = $('folderResults');
+    const q = query.trim().toLowerCase();
+
+    results.hidden = false;
+    results.innerHTML = '';
+
+    if(!githubSongFiles.length){
+      results.innerHTML = '<div class="folder-empty">No songs found in GitHub library.</div>';
+      return;
+    }
+
+    const filtered = githubSongFiles.filter(item =>
+      !q || item.searchText.includes(q)
+    );
+
+    const status = document.createElement('div');
+    status.className = 'folder-status';
+    status.textContent = q
+      ? `${filtered.length} of ${githubSongFiles.length} songs`
+      : `${githubSongFiles.length} songs`;
+    results.appendChild(status);
+
+    if(!filtered.length){
+      const empty = document.createElement('div');
+      empty.className = 'folder-empty';
+      empty.textContent = 'No matching songs found.';
+      results.appendChild(empty);
+      return;
+    }
+
+    const grouped = new Map();
+    filtered.forEach(item => {
+      const folder = item.folderPath || 'songs';
+      if(!grouped.has(folder)) grouped.set(folder, []);
+      grouped.get(folder).push(item);
+    });
+
+    for(const [folder, items] of grouped){
+      const folderHeader = document.createElement('div');
+      folderHeader.className = 'folder-status';
+      folderHeader.textContent = `📁 ${folder || 'songs'}`;
+      results.appendChild(folderHeader);
+
+      items.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'folder-result';
+        btn.title = `Load ${item.songName}`;
+
+        const name = document.createElement('span');
+        name.textContent = `🎵 ${item.songName}`;
+        btn.appendChild(name);
+
+        btn.onclick = async () => {
+          try{
+            const response = await fetch(item.downloadUrl);
+            if(!response.ok) throw new Error(`Song fetch failed: ${response.status}`);
+            const text = await response.text();
+            await addSongFromLocalText(item.songName, text);
+          }catch(err){
+            console.error(err);
+            alert('Unable to load this song from GitHub.');
+          }
+        };
+
+        results.appendChild(btn);
+      });
+    }
+  }
+
+  async function loadGitHubSongLibrary(){
+    try{
+      $('folderResults').hidden = false;
+      $('folderResults').innerHTML = '<div class="folder-empty">Loading GitHub songs…</div>';
+
+      githubSongFiles = await scanGitHubSongs(GITHUB_LIBRARY.root);
+
+      // Use the existing search box for GitHub songs.
+      $('folderSearch').value = '';
+      renderGitHubSongResults('');
+
+      // Stop relying on local folder selection for this library.
+      $('browseFolderBtn').title = 'Refresh GitHub song library';
+      $('browseFolderBtn').ariaLabel = 'Refresh GitHub song library';
+    }catch(err){
+      console.error(err);
+      $('folderResults').hidden = false;
+      $('folderResults').innerHTML =
+        '<div class="folder-empty">Unable to load GitHub song library.</div>';
+    }
+  }
+
+  // Local song folder state.
+  // Expected structure:
+  // folder/
+  //   Song Name.txt
+  //
+  // Each TXT file becomes one song. The filename (without .txt) is the song name.
+  let localSongFiles = [];
+
+  function normalizeSongFileName(name){
+    return name.replace(/\.txt$/i, '').trim();
+  }
+
+  function renderFolderResults(query=''){
+    const results=$('folderResults');
+    const q=(query || '').trim().toLowerCase();
+
+    if(!localSongFiles.length){
+      results.hidden=true;
+      results.innerHTML='';
+      return;
+    }
+
+    results.hidden=false;
+    results.innerHTML='';
+
+    const filtered=localSongFiles.filter(item=>{
+      const searchable=item.searchText || item.songName.toLowerCase();
+      return !q || searchable.includes(q);
+    });
+
+    const status=document.createElement('div');
+    status.className='folder-status';
+    status.textContent=q
+      ? `${filtered.length} of ${localSongFiles.length} songs`
+      : `${localSongFiles.length} song${localSongFiles.length===1?'':'s'}`;
+    results.appendChild(status);
+
+    if(!filtered.length){
+      const empty=document.createElement('div');
+      empty.className='folder-empty';
+      empty.textContent='No matching songs found.';
+      results.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(item=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='folder-result';
+      btn.title=`Load ${item.songName}`;
+
+      const name=document.createElement('span');
+      name.textContent=item.songName;
+      btn.appendChild(name);
+
+      if(item.translitName){
+        const tr=document.createElement('span');
+        tr.className='result-translit';
+        tr.textContent=item.translitName;
+        btn.appendChild(tr);
+      }
+
+      btn.onclick=async()=>{
+        try{
+          const text=await item.file.text();
+          addSongFromLocalText(item.songName,text);
+
+          // Keep the complete folder browser visible after loading.
+          renderFolderResults($('folderSearch').value);
+        }catch(err){
+          console.error(err);
+          alert('Unable to read this song file.');
+        }
+      };
+
+      results.appendChild(btn);
+    });
+  }
+
+  // Telugu -> simple readable English transliteration.
+  // This is used automatically when a Telugu TXT has no English
+  // transliteration alongside it.
+  const TE_VOWELS = {
+    'అ':'a','ఆ':'aa','ఇ':'i','ఈ':'ee','ఉ':'u','ఊ':'oo',
+    'ఋ':'ru','ఎ':'e','ఏ':'ae','ఐ':'ai','ఒ':'o','ఓ':'oo','ఔ':'au',
+    'ౠ':'ru','ౡ':'lu','ఌ':'lu'
+  };
+
+  const TE_CONSONANTS = {
+    'క':'k','ఖ':'kh','గ':'g','ఘ':'gh','ఙ':'ng',
+    'చ':'ch','ఛ':'chh','జ':'j','ఝ':'jh','ఞ':'ny',
+    'ట':'t','ఠ':'th','డ':'d','ఢ':'dh','ణ':'n',
+    'త':'t','థ':'th','ద':'d','ధ':'dh','న':'n',
+    'ప':'p','ఫ':'ph','బ':'b','భ':'bh','మ':'m',
+    'య':'y','ర':'r','ఱ':'r','ల':'l','ళ':'l','వ':'v',
+    'శ':'sh','ష':'sh','స':'s','హ':'h',
+    'క్ష':'ksh','జ్ఞ':'gn'
+  };
+
+  const TE_MATRAS = {
+    'ా':'aa','ి':'i','ీ':'ee','ు':'u','ూ':'oo',
+    'ృ':'ru','ె':'e','ే':'ae','ై':'ai','ొ':'o',
+    'ో':'oo','ౌ':'au','ౄ':'ru','ౢ':'lu','ౣ':'lu'
+  };
+
+  const TE_SIGNS = {
+    'ం':'m','ః':'h','ఁ':'n','్':'','ౕ':'','ౖ':''
+  };
+
+  const TE_DIGITS = {
+    '౦':'0','౧':'1','౨':'2','౩':'3','౪':'4',
+    '౫':'5','౬':'6','౭':'7','౮':'8','౯':'9'
+  };
+
+  function transliterateTeluguLine(line){
+    let out = '';
+    let i = 0;
+
+    while (i < line.length) {
+      const ch = line[i];
+
+      // Preserve Latin/ASCII text, punctuation and spaces.
+      if (!/[\u0C00-\u0C7F]/.test(ch)) {
+        out += TE_DIGITS[ch] || ch;
+        i++;
+        continue;
+      }
+
+      // Telugu conjuncts such as క్ష and జ్ఞ.
+      let consonant = null;
+      let consumed = 1;
+
+      if (i + 1 < line.length) {
+        const pair = line.slice(i, i + 2);
+        if (TE_CONSONANTS[pair]) {
+          consonant = pair;
+          consumed = 2;
+        }
+      }
+
+      if (!consonant && TE_CONSONANTS[ch]) {
+        consonant = ch;
+      }
+
+      if (consonant) {
+        out += TE_CONSONANTS[consonant];
+        i += consumed;
+
+        // Virama: consonant has no inherent 'a'.
+        if (line[i] === '్') {
+          i++;
+          continue;
+        }
+
+        // Dependent vowel sign.
+        if (TE_MATRAS[line[i]]) {
+          out += TE_MATRAS[line[i]];
+          i++;
+        } else {
+          // Telugu consonants carry the inherent 'a'.
+          out += 'a';
+        }
+        continue;
+      }
+
+      if (TE_VOWELS[ch]) {
+        out += TE_VOWELS[ch];
+        i++;
+        continue;
+      }
+
+      if (TE_MATRAS[ch]) {
+        out += TE_MATRAS[ch];
+        i++;
+        continue;
+      }
+
+      if (TE_SIGNS[ch] !== undefined) {
+        out += TE_SIGNS[ch];
+        i++;
+        continue;
+      }
+
+      out += ch;
+      i++;
+    }
+
+    return out;
+  }
+
+  function transliterateTelugu(text){
+    return text
+      .replace(/\r/g, '')
+      .split('\n')
+      .map(line => transliterateTeluguLine(line))
+      .join('\n')
+      .replace(/[ ]{2,}/g, ' ')
+      .trim();
+  }
+
+  function hasTelugu(text){
+    return /[\u0C00-\u0C7F]/.test(text);
+  }
+
+
+  // High-quality Romanized Telugu -> Telugu script conversion.
+  // Aksharamukha is used in the browser; the local fallback is only used
+  // if the network library cannot be loaded.
+  function looksRomanizedTelugu(text){
+    if (!text || /[\u0C00-\u0C7F]/.test(text)) return false;
+    const lower=text.toLowerCase();
+
+    // Common Telugu transliteration patterns/words.
+    const hints=[
+      'yesayya','yesaya','devudu','deva','ninnu','naaku','neeku','prabhu',
+      'swamy','aaraadh','aaradh','melu','cheyaka','unnav','unnadi','unnadu',
+      'vaadu','vadu','maa','mana','manasu','hruday','krupa','krupaa',
+      'swasth','paapam','paap','aashalu','theerche','sadhyamu','jayam',
+      'mahim','aaraadhana','undalen','koreva','chesaanu','chestha'
+    ];
+    const hits=hints.reduce((n,h)=>n+(lower.includes(h)?1:0),0);
+
+    // Also recognize typical Telugu romanization vowel patterns.
+    const patternMatches=(lower.match(/\b[a-z]*(aa|ee|oo|ae|ai|au|th|dh|bh|ph|ch|sh|ng|ny)[a-z]*\b/g)||[]).length;
+
+    return hits >= 1 || patternMatches >= 2;
+  }
+
+  // Google Input Tools Telugu transliteration.
+  // Uses Google's established Telugu transliteration engine instead of
+  // character-by-character conversion or the previous IndicXlit wrapper.
+  // Telugu transliteration input method: te-t-i0-und.
+  const googleTeluguCache = new Map();
+
+  async function googleTeluguWord(word){
+    if(!word || !/^[A-Za-z0-9]+$/.test(word)) return word;
+
+    const key=word.toLowerCase();
+    if(googleTeluguCache.has(key)) return googleTeluguCache.get(key);
+
+    try{
+      const url =
+        'https://inputtools.google.com/request' +
+        '?text=' + encodeURIComponent(word) +
+        '&itc=te-t-i0-und' +
+        '&num=8&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage';
+
+      const response=await fetch(url,{mode:'cors'});
+      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const data=await response.json();
+
+      // Google Input Tools response:
+      // ["SUCCESS", [[input, [suggestion1, suggestion2, ...]], ...]]
+      if(Array.isArray(data) && data[0]==='SUCCESS' && Array.isArray(data[1])){
+        const item=data[1].find(x =>
+          Array.isArray(x) &&
+          Array.isArray(x[1]) &&
+          x[1].some(v => /[\u0C00-\u0C7F]/.test(v))
+        );
+
+        if(item && item[1]){
+          const native=item[1].find(v => /[\u0C00-\u0C7F]/.test(v));
+          if(native){
+            googleTeluguCache.set(key,native);
+            return native;
+          }
+        }
+      }
+    }catch(err){
+      console.warn('Google Telugu transliteration failed for:',word,err);
+    }
+
+    return word;
+  }
+
+  async function romanizedTeluguToTelugu(text){
+    const lines=text.replace(/\r/g,'').split('\n');
+    const output=[];
+
+    for(const line of lines){
+      const parts=line.split(/(\s+|[.,!?;:'"()\[\]{}|—–-]+)/);
+      const converted=[];
+
+      // Convert sequentially so spacing/punctuation stays exactly as supplied.
+      for(const part of parts){
+        if(/^[A-Za-z0-9]+$/.test(part)){
+          converted.push(await googleTeluguWord(part));
+        }else{
+          converted.push(part);
+        }
+      }
+
+      output.push(converted.join(''));
+    }
+
+    return output.join('\n');
+  }
+
+
+  function showTranslitStatus(message){
+    let el=$('translitStatus');
+    if(!el){
+      el=document.createElement('div');
+      el.id='translitStatus';
+      el.style.cssText='position:fixed;left:14px;bottom:14px;z-index:10020;padding:8px 11px;border-radius:8px;background:#111;color:#fff;font:700 11px/1.2 var(--en-font);box-shadow:0 3px 12px rgba(0,0,0,.2);';
+      document.body.appendChild(el);
+    }
+    el.textContent=message;
+    el.hidden=false;
+  }
+
+  function hideTranslitStatus(){
+    const el=$('translitStatus');
+    if(el) el.hidden=true;
+  }
+
+  async function addSongFromLocalText(songName, lyrics){
+    const cleanName = songName.trim();
+    const cleanLyrics = lyrics.replace(/^\uFEFF/, '').trim();
+
+    if (!cleanName || !cleanLyrics){
+      alert('The selected TXT file is empty or has no song name.');
+      return;
+    }
+
+    // If the TXT contains Telugu and no separate English transliteration,
+    // automatically generate the English transliteration and show both
+    // versions side-by-side.
+    const teluguOnly = hasTelugu(cleanLyrics);
+    const romanizedTelugu = looksRomanizedTelugu(cleanLyrics);
+
+    let songData;
+
+    if (teluguOnly) {
+      songData = {
+        name: cleanName,
+        translitName: hasTelugu(cleanName) ? transliterateTelugu(cleanName) : '',
+        bilingual: true,
+        single: '',
+        te: cleanLyrics,
+        en: transliterateTelugu(cleanLyrics)
+      };
+    } else if (romanizedTelugu) {
+      showTranslitStatus('Converting Romanized Telugu to Telugu…');
+      const teluguScript = await romanizedTeluguToTelugu(cleanLyrics);
+      hideTranslitStatus();
+
+      songData = {
+        name: cleanName,
+        translitName: cleanName,
+        bilingual: true,
+        single: '',
+        te: teluguScript,
+        en: cleanLyrics
+      };
+    } else {
+      songData = {
+        name: cleanName,
+        bilingual: false,
+        single: cleanLyrics,
+        te: '',
+        en: ''
+      };
+    }
+
+    if (typeof addSongData === 'function'){
+      addSongData(songData);
+    } else if (typeof songs !== 'undefined' && Array.isArray(songs)){
+      songs.push(songData);
+      if (typeof saveSongs === 'function') saveSongs();
+      if (typeof rerenderAllSongsForView === 'function') rerenderAllSongsForView();
+    } else {
+      // Fallback: store the imported song for the application's existing
+      // initialization code to pick up.
+      window.__pendingImportedSong = songData;
+      if (typeof renderSong === 'function'){
+        const pages = renderSong(songData);
+        pages.forEach(p => p._songData = structuredClone(songData));
+      }
+    }
+  }
+
+  async function browseSongFolder(){
+    try{
+      if(window.showDirectoryPicker){
+        const dir=await window.showDirectoryPicker({mode:'read'});
+        await saveFolderHandle(dir);
+        localSongFiles=await readFolderHandle(dir);
+        $('folderSearch').value='';
+        $('folderSearchWrap').hidden=false;
+        $('browseFolderBtn').hidden=false;
+        renderFolderResults('');
+        $('folderSearch').focus();
+        return;
+      }
+      $('folderInputFallback').click();
+    }catch(err){
+      if(err && err.name==='AbortError') return;
+      console.error(err);
+      alert('Unable to browse the selected folder.');
+    }
+  }
+
+  function handleFallbackFolder(files){
+    localSongFiles=[...files]
+      .filter(file=>/\.txt$/i.test(file.name))
+      .map(file=>{
+        const songName=normalizeSongFileName(file.name);
+        return {
+          file,
+          songName,
+          translitName:hasTelugu(songName)?transliterateTelugu(songName):'',
+          translitLyrics:'',
+          searchText:`${songName} ${hasTelugu(songName)?transliterateTelugu(songName):''}`.toLowerCase()
+        };
+      })
+      .sort((a,b)=>a.songName.localeCompare(b.songName,undefined,{numeric:true,sensitivity:'base'}));
+
+    $('folderSearch').value='';
+    $('folderSearchWrap').hidden=false;
+    $('browseFolderBtn').hidden=false;
+    renderFolderResults('');
+  }
+
+  // Folder icon menu: GitHub library OR local folder upload.
+  const folderPickerMenu = $('folderPickerMenu');
+
+  $('browseFolderBtn').onclick = (e) => {
+    e.stopPropagation();
+    const open = folderPickerMenu.hidden;
+    folderPickerMenu.hidden = !open;
+    $('browseFolderBtn').setAttribute('aria-expanded', String(open));
+  };
+
+  $('githubLibraryBtn').onclick = async () => {
+    folderPickerMenu.hidden = true;
+    $('browseFolderBtn').setAttribute('aria-expanded','false');
+    await loadGitHubSongLibrary();
+  };
+
+  $('uploadFolderBtn').onclick = () => {
+    folderPickerMenu.hidden = true;
+    $('browseFolderBtn').setAttribute('aria-expanded','false');
+    $('folderInputFallback').click();
+  };
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.folder-picker-wrap')) {
+      folderPickerMenu.hidden = true;
+      $('browseFolderBtn').setAttribute('aria-expanded','false');
+    }
+  });
+  $('folderInputFallback').onchange = (e) => {
+    handleFallbackFolder(e.target.files || []);
+    e.target.value = '';
+  };
+
+
+  $('folderSearch').oninput = (e) => {
+    if (githubSongFiles.length) {
+      renderGitHubSongResults(e.target.value);
+    } else {
+      renderFolderResults(e.target.value);
+    }
+  };
+
+  // Restore the last selected folder automatically on startup.
+  loadGitHubSongLibrary().catch(()=>{});
+
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#tools')){
+      // Keep the folder browser and complete folder contents visible.
+    }
+  });
+
+
+  function addSongData(songData){
+    // Load the selected TXT directly into the existing sheet renderer.
+    // renderSong() appends the generated sheet(s) to the document and also
+    // attaches _songData, so Edit/Remove/A4 pagination continue to work.
+    renderSong(songData);
+
+    // Clear the import fields so the selected TXT contents do not remain
+    // cached in the Import Song Lyrics panel.
     $('songName').value = '';
     $('singleLyrics').value = '';
     $('teLyrics').value = '';
     $('enLyrics').value = '';
     $('bilingual').checked = false;
     syncImportFields();
+
+    // Close the import drawer after loading the selected song.
+    if (typeof closeImportDrawer === 'function') {
+      closeImportDrawer();
+    }
+  }
+
+
+  $('openImport').onclick = () => {
+    // The + button is also the drawer toggle.
+    if (drawer.classList.contains('open')) {
+      closeImportDrawer();
+      return;
+    }
+
+    $('songName').value = '';
+    $('singleLyrics').value = '';
+    $('teLyrics').value = '';
+    $('enLyrics').value = '';
+    $('bilingual').checked = false;
+    syncImportFields();
+
     drawer.classList.add('open');
+    document.body.classList.add('import-drawer-open');
     $('songName').focus();
   };
-  $('closeImport').onclick = () => drawer.classList.remove('open');
-  $('minImport').onclick = () => drawer.classList.remove('open');
+
+  function closeImportDrawer(){
+    drawer.classList.remove('open');
+    document.body.classList.remove('import-drawer-open');
+  }
+
+  $('closeImport').onclick = closeImportDrawer;
+  $('minImport').onclick = closeImportDrawer;
 
   const sideMenu = $('sideMenu');
-
   $('hamburgerBtn').onclick = () => sideMenu.classList.add('open');
   $('closeMenu').onclick = () => sideMenu.classList.remove('open');
 
@@ -642,10 +2621,31 @@ Blank lines separate verses."></textarea>
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      // ESC only closes open panels / Full View.
+      // It must NOT change A4 View or Webpage View.
       settings.classList.remove('open');
       sideMenu.classList.remove('open');
-      drawer.classList.remove('open');
+      closeImportDrawer();
       editDrawer.classList.remove('open');
+
+      if (document.body.classList.contains('full-view')) {
+        document.body.classList.remove('full-view');
+        $('fullViewBtn').classList.remove('active');
+        $('fullViewBtn').textContent = '⛶ Full View';
+
+        // Restore whichever sheet view was active before Full View.
+        if (document.body.classList.contains('a4-view')) {
+          $('viewModeBtn').classList.add('active');
+          $('webViewBtn').classList.remove('active');
+        } else {
+          document.body.classList.add('web-view');
+          $('viewModeBtn').classList.remove('active');
+          $('webViewBtn').classList.add('active');
+        }
+      }
+
+      e.preventDefault();
+      e.stopPropagation();
     }
   });
 
@@ -666,10 +2666,78 @@ Blank lines separate verses."></textarea>
   }
 
   function groups(text) {
-    return text.replace(/\r/g, '')
-      .split(/\n\s*\n/)
-      .map(v => v.split('\n').map(x => x.trim()).filter(Boolean))
-      .filter(v => v.length);
+    const raw = (text || '').replace(/\r/g, '');
+    const lines = raw.split('\n');
+    const result = [];
+    let current = null;
+
+    /*
+      Verse separators supported:
+
+      1. Blank line
+      2. Numbered verse at the START of a line:
+           1 xyz
+           1. xyz
+           1) xyz
+           1: xyz
+           5. యాత్రికుడనే ఈలోకములో...
+      3. Verse 1:
+         Verse 2:
+      4. Numbered marker with no text:
+           1.
+           2.
+           3.
+    */
+
+    const numbered = /^\s*(?:(\d+)\s*[\.\):\-]?|verse\s+(\d+)\s*[:.)-])(?:\s+(.*)|\s*)$/i;
+
+    function pushCurrent() {
+      if (current && current.lines.length) {
+        result.push(current);
+      }
+      current = null;
+    }
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+
+      if (!line) {
+        pushCurrent();
+        continue;
+      }
+
+      const match = line.match(numbered);
+
+      if (match) {
+        // Every numbered line starts a NEW verse, even when there is
+        // no blank line before it.
+        pushCurrent();
+
+        current = {
+          number: Number(match[1] || match[2]),
+          lines: []
+        };
+
+        const verseText = (match[3] || '').trim();
+        if (verseText) {
+          current.lines.push(verseText);
+        }
+
+        continue;
+      }
+
+      if (!current) {
+        current = {
+          number: null,
+          lines: []
+        };
+      }
+
+      current.lines.push(line);
+    }
+
+    pushCurrent();
+    return result;
   }
 
   function isTe(text) {
@@ -688,10 +2756,22 @@ Blank lines separate verses."></textarea>
     const remove = document.createElement('button');
     remove.className = 'remove';
     remove.textContent = '🗑 Remove Song';
-    remove.onclick = () => page.remove();
+    remove.onclick = () => {
+      const data = page._songData;
+      if (!data) return;
+
+      const pages = [...document.querySelectorAll('.page')]
+        .filter(p => p._songData === page._songData ||
+          (p._songData && JSON.stringify(p._songData) === JSON.stringify(data)));
+
+      pages.forEach(p => {
+        if (p._songControls) p._songControls.remove();
+        p.remove();
+      });
+    };
 
     manage.append(edit, remove);
-    page.appendChild(manage);
+    page._songControls = manage;
   }
 
   function createTitle(page, name) {
@@ -701,42 +2781,18 @@ Blank lines separate verses."></textarea>
     page.appendChild(title);
   }
 
-  function createBilingualContent(page, teText, enText) {
-    const tg = groups(teText);
-    const eg = groups(enText);
-    const count = Math.max(tg.length, eg.length);
-
-    for (let g = 0; g < count; g++) {
-      const verse = document.createElement('div');
-      verse.className = 'verse';
-
-      const lineCount = Math.max((tg[g] || []).length, (eg[g] || []).length);
-
-      for (let i = 0; i < lineCount; i++) {
-        const row = document.createElement('div');
-        row.className = 'row';
-
-        const te = document.createElement('div');
-        te.className = 'te';
-        te.textContent = (tg[g] || [])[i] || '';
-
-        const en = document.createElement('div');
-        en.className = 'en';
-        en.textContent = (eg[g] || [])[i] || '';
-
-        row.append(te, en);
-        verse.appendChild(row);
-      }
-
-      page.appendChild(verse);
-    }
-  }
-
   function createSingleVerse(group) {
     const verse = document.createElement('div');
     verse.className = 'verse';
 
-    group.forEach(line => {
+    if ($('showVerseNumbers').checked && group.number != null) {
+      const number = document.createElement('div');
+      number.className = 'verse-number';
+      number.textContent = group.number + '.';
+      verse.appendChild(number);
+    }
+
+    group.lines.forEach(line => {
       const p = document.createElement('div');
       p.className = isTe(line) ? 'te' : 'single-line';
       p.textContent = line;
@@ -746,104 +2802,258 @@ Blank lines separate verses."></textarea>
     return verse;
   }
 
-  function createNonBilingualPages(songData) {
+
+  function updateA4ContinuationLabels() {
+    const pages = [...document.querySelectorAll('.page')];
+    const songGroups = new Map();
+
+    // Group pages by song content, because each rendered sheet may contain
+    // a cloned _songData object.
+    pages.forEach(page => {
+      if (!page._songData) return;
+      const key = JSON.stringify(page._songData);
+      if (!songGroups.has(key)) songGroups.set(key, []);
+      songGroups.get(key).push(page);
+    });
+
+    songGroups.forEach(songPages => {
+      songPages.forEach((page, index) => {
+        let label = page.querySelector(':scope > .a4-continue-label');
+
+        if (!label) {
+          label = document.createElement('div');
+          label.className = 'a4-continue-label';
+          page.appendChild(label);
+        }
+
+        if (document.body.classList.contains('a4-view') && index < songPages.length - 1) {
+          // Always point to the NEXT part.
+          // Page 1 → "Continue to part 2"
+          // Page 2 → "Continue to part 3", etc.
+          label.textContent = `Continue to part ${index + 2}`;
+        } else {
+          // Final page has no continuation label.
+          label.textContent = '';
+        }
+      });
+    });
+  }
+
+  function waitForLayout() {
+    return new Promise(resolve => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => requestAnimationFrame(resolve));
+          } else {
+            resolve();
+          }
+        });
+      });
+    });
+  }
+
+  /* 
+    BILINGUAL RENDERING
+    For bilingual songs, create pages and check for overflow
+  */
+  function renderBilingualSong(songData) {
+    const pages = [];
+    const tg = groups(songData.te);
+    const eg = groups(songData.en);
+    const count = Math.max(tg.length, eg.length);
+
+    let page = createBilingualPage(songData.name, songData.translitName);
+    pages.push(page);
+
+    for (let g = 0; g < count; g++) {
+      const verse = document.createElement('div');
+      verse.className = 'verse';
+
+      const verseNumber = tg[g]?.number ?? eg[g]?.number ?? null;
+
+      if ($('showVerseNumbers').checked && verseNumber != null) {
+        const n = document.createElement('div');
+        n.className = 'verse-number';
+        n.textContent = verseNumber + '.';
+        verse.appendChild(n);
+      }
+
+      const teLines = tg[g]?.lines || [];
+      const enLines = eg[g]?.lines || [];
+      const lineCount = Math.max(teLines.length, enLines.length);
+
+      for (let i = 0; i < lineCount; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const te = document.createElement('div');
+        te.className = 'te';
+        te.textContent = teLines[i] || '';
+
+        const en = document.createElement('div');
+        en.className = 'en';
+        en.textContent = enLines[i] || '';
+
+        row.append(te, en);
+        verse.appendChild(row);
+      }
+
+      const lyricContainer = page.querySelector('.lyrics-container');
+      lyricContainer.appendChild(verse);
+
+      void lyricContainer.offsetHeight;
+
+      if (isA4View() && lyricContainer.scrollHeight > lyricContainer.clientHeight + 1) {
+        lyricContainer.removeChild(verse);
+        page = createBilingualPage(songData.name, songData.translitName);
+        pages.push(page);
+        page.querySelector('.lyrics-container').appendChild(verse);
+      }
+    }
+
+    pages.forEach(p => p._songData = structuredClone(songData));
+    return pages;
+  }
+
+  function createBilingualPage(songName, translitName='') {
+    const page = document.createElement('section');
+    page.className = 'page bilingual-song';
+    addManageButtons(page);
+
+    // Create title outside the flex container
+    const title = document.createElement('h1');
+    title.className = isTe(songName) ? 'song-title-te' : 'song-title-en';
+    title.textContent = songName || 'Untitled Song';
+    page.appendChild(title);
+
+    const translitTitle = translitName ||
+      (isTe(songName) ? transliterateTelugu(songName) : '');
+    if (translitTitle) {
+      const trTitle = document.createElement('div');
+      trTitle.className = 'song-title-translit';
+      trTitle.textContent = translitTitle;
+      page.appendChild(trTitle);
+    }
+
+    // Create lyrics container (flex:1 to take remaining space in A4 view)
+    const lyricContainer = document.createElement('div');
+    lyricContainer.className = 'lyrics-container';
+    page.appendChild(lyricContainer);
+
+    document.body.appendChild(page);
+    if (page._songControls) document.body.insertBefore(page._songControls, page);
+
+    return page;
+  }
+
+  /* 
+    NON-BILINGUAL RENDERING
+    Two columns per page, overflow to new page
+  */
+  function renderNonBilingualSong(songData) {
     const pages = [];
     const verseGroups = groups(songData.single);
 
-    // Create the first page with title + two columns.
-    let page = document.createElement('section');
-    page.className = 'page nonbilingual-song';
-    addManageButtons(page);
-    createTitle(page, songData.name);
-
-    let columns = document.createElement('div');
-    columns.className = 'single-song-columns';
-
-    let left = document.createElement('div');
-    left.className = 'single-song-column';
-
-    let right = document.createElement('div');
-    right.className = 'single-song-column';
-
-    columns.append(left, right);
-    page.appendChild(columns);
-    document.body.appendChild(page);
+    let page = createNonBilingualPage(songData.name);
     pages.push(page);
 
+    const columns = page.querySelector('.single-song-columns');
+    let left = columns.children[0];
+    let right = columns.children[1];
     let currentColumn = left;
-
-    // Use actual column height after rendering. A small temporary overflow
-    // check lets us move a whole verse to the next column/page.
-    function overflow(col) {
-      return col.scrollHeight > col.clientHeight + 1;
-    }
-
-    function nextPage() {
-      page = document.createElement('section');
-      page.className = 'page nonbilingual-song';
-      addManageButtons(page);
-
-      columns = document.createElement('div');
-      columns.className = 'single-song-columns';
-
-      left = document.createElement('div');
-      left.className = 'single-song-column';
-
-      right = document.createElement('div');
-      right.className = 'single-song-column';
-
-      columns.append(left, right);
-      page.appendChild(columns);
-      document.body.appendChild(page);
-      pages.push(page);
-
-      currentColumn = left;
-    }
 
     verseGroups.forEach(group => {
       const verse = createSingleVerse(group);
       currentColumn.appendChild(verse);
 
-      if (!overflow(currentColumn)) return;
+      // Force layout calculation before measuring A4 overflow.
+      void currentColumn.offsetHeight;
 
+      // Check overflow
+      if (!isA4View() || currentColumn.scrollHeight <= currentColumn.clientHeight + 1) {
+        return;  // Fits, continue
+      }
+
+      // Doesn't fit - remove and try right column
       currentColumn.removeChild(verse);
 
       if (currentColumn === left) {
         right.appendChild(verse);
-
-        if (overflow(right)) {
-          right.removeChild(verse);
-          nextPage();
-          currentColumn.appendChild(verse);
-        } else {
+        
+        void right.offsetHeight;
+        if (!isA4View() || right.scrollHeight <= right.clientHeight + 1) {
           currentColumn = right;
+          return;  // Fits in right column
         }
-      } else {
-        nextPage();
-        currentColumn.appendChild(verse);
+
+        // Doesn't fit in right either - remove and create new page
+        right.removeChild(verse);
       }
+
+      // Create new page
+      page = createNonBilingualPage(songData.name);
+      pages.push(page);
+
+      const newColumns = page.querySelector('.single-song-columns');
+      left = newColumns.children[0];
+      right = newColumns.children[1];
+      currentColumn = left;
+
+      left.appendChild(verse);
     });
 
+    pages.forEach(p => p._songData = structuredClone(songData));
     return pages;
   }
 
-  function renderSong(songData) {
-    // Store data on the first page so Edit can reconstruct the exact song.
-    if (songData.bilingual) {
-      const page = document.createElement('section');
-      page.className = 'page bilingual-song';
-      addManageButtons(page);
-      createTitle(page, songData.name);
-      createBilingualContent(page, songData.te, songData.en);
-      page._songData = structuredClone(songData);
-      document.body.appendChild(page);
-      return [page];
+  function createNonBilingualPage(songName) {
+    const page = document.createElement('section');
+    page.className = 'page nonbilingual-song';
+    addManageButtons(page);
+
+    // Create title
+    const title = document.createElement('h1');
+    title.className = isTe(songName) ? 'song-title-te' : 'song-title-en';
+    title.textContent = songName || 'Untitled Song';
+    page.appendChild(title);
+
+    const translitTitle = translitName || (isTe(songName) ? transliterateTelugu(songName) : '');
+    if (translitTitle) {
+      const trTitle = document.createElement('div');
+      trTitle.className = 'song-title-translit';
+      trTitle.textContent = translitTitle;
+      page.appendChild(trTitle);
     }
 
-    const pages = createNonBilingualPages(songData);
-    // The first page owns the song data; all pages share the same object.
-    pages.forEach(p => p._songData = structuredClone(songData));
-    return pages;
+    // Create lyrics container with two columns
+    const lyricContainer = document.createElement('div');
+    lyricContainer.className = 'lyrics-container';
+
+    const columns = document.createElement('div');
+    columns.className = 'single-song-columns';
+
+    const left = document.createElement('div');
+    left.className = 'single-song-column';
+
+    const right = document.createElement('div');
+    right.className = 'single-song-column';
+
+    columns.append(left, right);
+    lyricContainer.appendChild(columns);
+    page.appendChild(lyricContainer);
+
+    document.body.appendChild(page);
+    if (page._songControls) document.body.insertBefore(page._songControls, page);
+
+    return page;
+  }
+
+  function renderSong(songData) {
+    if (songData.bilingual) {
+      return renderBilingualSong(songData);
+    }
+    return renderNonBilingualSong(songData);
   }
 
   $('addSong').onclick = () => {
@@ -867,7 +3077,6 @@ Blank lines separate verses."></textarea>
 
     renderSong(songData);
 
-    // Clear the import form after adding so the next Add Song is always blank.
     $('songName').value = '';
     $('singleLyrics').value = '';
     $('teLyrics').value = '';
@@ -875,7 +3084,7 @@ Blank lines separate verses."></textarea>
     $('bilingual').checked = false;
     syncImportFields();
 
-    drawer.classList.remove('open');
+    closeImportDrawer();
   };
 
   $('clearSong').onclick = () => {
@@ -888,8 +3097,6 @@ Blank lines separate verses."></textarea>
     const data = page._songData;
     if (!data) return;
 
-    // For a multi-page non-bilingual song, gather every page that belongs
-    // to the same song by the shared name/data object.
     editingPages = [...document.querySelectorAll('.page')].filter(
       p => p._songData && p._songData.name === data.name
     );
@@ -915,9 +3122,10 @@ Blank lines separate verses."></textarea>
       en: $('editEnLyrics').value
     };
 
-    // Remove every page belonging to the old version, then render the
-    // edited song cleanly using the same pagination rules as Add Song.
-    editingPages.forEach(p => p.remove());
+    editingPages.forEach(p => {
+      if (p._songControls) p._songControls.remove();
+      p.remove();
+    });
     editingPages = [];
 
     renderSong(updated);
@@ -925,6 +3133,15 @@ Blank lines separate verses."></textarea>
   };
 
   $('songName').focus();
+
+  $('verseSeparator').onchange = () => {
+    rerenderAllSongsForView();
+    updateVerseSeparatorButton();
+  };
+
+  $('showVerseNumbers').onchange = () => {
+    rerenderAllSongsForView();
+  };
 
   // Typography
   function loadFont(font) {
@@ -947,9 +3164,6 @@ Blank lines separate verses."></textarea>
   function applyLineSpacing() {
     const value = $('lineGap').value;
     document.documentElement.style.setProperty('--line-height', value);
-    document.querySelectorAll('.te, .en, .single-line').forEach(el => {
-      el.style.lineHeight = value;
-    });
     $('lineGapOut').value = value + '×';
   }
 
@@ -959,9 +3173,6 @@ Blank lines separate verses."></textarea>
     const teStatus = $('teFontStatus');
     const enStatus = $('enFontStatus');
 
-    // Public catalog mirror because Google's metadata endpoint does not
-    // expose browser CORS. Actual font files are still loaded directly
-    // from fonts.googleapis.com when selected.
     const catalogUrl =
       'https://cdn.jsdelivr.net/gh/herrstrietzel/fonthelpers@main/json/gfontsMeta.json';
 
@@ -986,10 +3197,9 @@ Blank lines separate verses."></textarea>
         enList.appendChild(en);
       });
 
-      teStatus.textContent = unique.length + ' Google Fonts available online';
-      enStatus.textContent = 'Select a font or type/search its name';
+      teStatus.textContent = unique.length + ' Google Fonts available';
+      enStatus.textContent = 'Select a font or type its name';
     } catch (err) {
-      // Keep a useful fallback list if the online catalog is unavailable.
       const fallback = [
         'Noto Sans Telugu','Noto Serif Telugu','Anek Telugu','Mandali','NTR',
         'Ramabhadra','Baloo Tammudu 2','Timmana','Suranna','Mallanna',
@@ -1001,8 +3211,8 @@ Blank lines separate verses."></textarea>
         const te = document.createElement('option'); te.value=name; teList.appendChild(te);
         const en = document.createElement('option'); en.value=name; enList.appendChild(en);
       });
-      teStatus.textContent = 'Online catalog unavailable — fallback list shown';
-      enStatus.textContent = 'Fonts still load directly from Google Fonts';
+      teStatus.textContent = 'Fallback font list shown';
+      enStatus.textContent = 'Fonts load directly from Google Fonts';
     }
   }
 
@@ -1010,7 +3220,10 @@ Blank lines separate verses."></textarea>
     const mode = $('pageOrientation').value;
     document.body.classList.toggle('orientation-landscape', mode === 'landscape');
 
-    // Update the browser print page size dynamically.
+    if ($('orientationBtn')) {
+      updateOrientationButton();
+    }
+
     let style = document.getElementById('dynamicPageOrientation');
     if (!style) {
       style = document.createElement('style');
@@ -1021,6 +3234,11 @@ Blank lines separate verses."></textarea>
     style.textContent = mode === 'landscape'
       ? '@page { size: A4 landscape; margin: 0; }'
       : '@page { size: A4 portrait; margin: 0; }';
+
+    // Re-render if we have pages and we're in A4 view
+    if (document.querySelector('.page') && isA4View()) {
+      requestAnimationFrame(() => rerenderAllSongsForView());
+    }
   }
 
   function applyType() {
@@ -1047,10 +3265,18 @@ Blank lines separate verses."></textarea>
     $('gapOut').value = $('gap').value + 'px';
 
     applyLineSpacing();
+
+    // Re-render if in A4 view - typography changes affect pagination
+    if (document.querySelector('.page') && isA4View()) {
+      requestAnimationFrame(() => rerenderAllSongsForView());
+    }
   }
 
   document.querySelectorAll('#settings select,#settings input')
-    .forEach(el => el.addEventListener('input', applyType));
+    .forEach(el => {
+      el.addEventListener('input', applyType);
+      el.addEventListener('change', applyType);
+    });
 
   $('pageOrientation').addEventListener('change', applyOrientation);
 
