@@ -269,6 +269,8 @@ body.web-view .single-song-column{
 .drawer .toggle{margin:14px 0;font:900 14px var(--en-font)}
 
 .drawer .actions{display:flex;gap:8px;margin:15px 0}
+/* Transliteration refresh controls inside Import Song Lyrics */
+
 
 .drawer .actions button{
   flex:1;
@@ -410,6 +412,39 @@ body.orientation-landscape .song-manage{
 #editDrawer .actions button.secondary{
   background:#eee;
   color:#111;
+}
+
+
+/* Inline transliteration action beside each bilingual lyric field */
+.lyrics-field-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:15px;
+}
+.lyrics-field-head label{
+  margin:0 !important;
+  display:block !important;
+}
+.translit-refresh-btn{
+  flex:0 0 auto;
+  border:1px solid #bbb;
+  border-radius:7px;
+  padding:7px 9px;
+  background:#f1f1f1;
+  color:#111;
+  font:900 11px/1.1 var(--en-font);
+  cursor:pointer;
+  white-space:nowrap;
+}
+.translit-refresh-btn:hover{background:#e5e5e5}
+.translit-refresh-btn:disabled{
+  opacity:.55;
+  cursor:wait;
+}
+#biBox .lyrics-field-head label{
+  font:900 14px/1.3 var(--en-font);
 }
 
 #editDrawer input[type=text],
@@ -1444,6 +1479,98 @@ body.import-drawer-open #tools{
   font-size:19px;
 }
 
+
+
+/* Word-level transliteration suggestion popup */
+#translitSuggestionPopup{
+  position:fixed;
+  z-index:10050;
+  width:min(300px,80vw);
+  max-height:280px;
+  overflow:auto;
+  padding:6px;
+  border:1px solid #cfcfcf;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 8px 28px rgba(0,0,0,.24);
+  display:none;
+  font-family:var(--en-font);
+}
+#translitSuggestionPopup.open{display:block}
+.translit-suggestion-title{
+  padding:7px 9px 5px;
+  font:900 11px/1.2 var(--en-font);
+  color:#666;
+  border-bottom:1px solid #eee;
+  margin-bottom:4px;
+}
+.translit-suggestion-item{
+  display:block;
+  width:100%;
+  border:0;
+  border-radius:7px;
+  padding:9px 10px;
+  background:#fff;
+  color:#111;
+  text-align:left;
+  cursor:pointer;
+  font:800 15px/1.25 var(--en-font);
+}
+.translit-suggestion-item:hover,
+.translit-suggestion-item.active{background:#eee}
+.translit-suggestion-empty{
+  padding:10px;
+  color:#777;
+  font:700 12px/1.4 var(--en-font);
+}
+
+
+/* Explorer: extend to the bottom of the available workspace */
+.explorer,
+.phonetic-explorer,
+.gunintham-explorer,
+.explorer-panel,
+.gunintham-panel,
+#explorer,
+#phoneticExplorer,
+#guninthamExplorer {
+  min-height: calc(100vh - 120px);
+  height: calc(100vh - 120px);
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.explorer .explorer-content,
+.phonetic-explorer .explorer-content,
+.gunintham-explorer .explorer-content,
+.explorer-panel .explorer-content,
+.gunintham-panel .explorer-content,
+#explorer .explorer-content,
+#phoneticExplorer .explorer-content,
+#guninthamExplorer .explorer-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* If the explorer is a grid/list, let its main body fill remaining height. */
+.explorer-body,
+.explorer-main,
+.gunintham-body,
+.gunintham-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Keep the explorer controls/header visible while scrolling. */
+.explorer-header,
+.gunintham-header,
+.explorer-toolbar {
+  flex: 0 0 auto;
+}
+
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
@@ -1559,6 +1686,7 @@ body.import-drawer-open #tools{
     <label>Telugu Lyrics
       <textarea id="editTeLyrics" placeholder="Telugu lyrics"></textarea>
     </label>
+    <div class="small-note">Google Input Tools is used for Roman Telugu → Telugu candidates. Telugu → English continues using the existing local Telugu romanizer because Google Input Tools does not provide a supported reverse operation.</div>
     <label>English / Transliteration
       <textarea id="editEnLyrics" placeholder="English / transliteration"></textarea>
     </label>
@@ -1599,16 +1727,27 @@ Blank lines separate verses."></textarea>
   </div>
 
   <div id="biBox" style="display:none">
-    <label>Telugu Lyrics
-      <textarea id="teLyrics" placeholder="Paste Telugu lyrics here.
+    <div class="lyrics-field-head">
+      <label for="teLyrics">Telugu Lyrics</label>
+      <button id="translitToEnglishBtn" type="button" class="translit-refresh-btn"
+              title="Refresh Telugu → English transliteration">
+        Translate-Literate to English
+      </button>
+    </div>
+    <textarea id="teLyrics" placeholder="Paste Telugu lyrics here.
 Keep the same line order as the English lyrics.
 Blank lines separate verses."></textarea>
-    </label>
-    <label>English / Transliteration
-      <textarea id="enLyrics" placeholder="Paste English / transliteration here.
+
+    <div class="lyrics-field-head">
+      <label for="enLyrics">English / Transliteration</label>
+      <button id="translitToTeluguBtn" type="button" class="translit-refresh-btn"
+              title="Refresh English → Telugu transliteration">
+        Translate-Literate to Telugu
+      </button>
+    </div>
+    <textarea id="enLyrics" placeholder="Paste English / transliteration here.
 Keep the same line order as the Telugu lyrics.
 Blank lines separate verses."></textarea>
-    </label>
   </div>
 
   <div class="actions">
@@ -1616,6 +1755,8 @@ Blank lines separate verses."></textarea>
     <button id="clearSong" class="secondary">Clear</button>
   </div>
 </aside>
+
+<div id="translitSuggestionPopup" role="listbox" aria-label="Transliteration suggestions"></div>
 
 <aside id="settings">
   <div class="drawer-head">
@@ -1916,7 +2057,7 @@ Blank lines separate verses."></textarea>
           file,
           songName,
           translitName: hasTelugu(songName) ? transliterateTelugu(songName) : '',
-          translitLyrics: telugu ? transliterateTelugu(text) : '',
+          translitLyrics: telugu ? await transliterateTeluguPreservingNumbers(text) : '',
           searchText: `${songName} ${hasTelugu(songName)?transliterateTelugu(songName):''} ${text} ${telugu?transliterateTelugu(text):''}`.toLowerCase()
         });
       }
@@ -2151,134 +2292,357 @@ Blank lines separate verses."></textarea>
     });
   }
 
-  // Telugu -> simple readable English transliteration.
-  // This is used automatically when a Telugu TXT has no English
-  // transliteration alongside it.
-  const TE_VOWELS = {
-    'అ':'a','ఆ':'aa','ఇ':'i','ఈ':'ee','ఉ':'u','ఊ':'oo',
-    'ఋ':'ru','ఎ':'e','ఏ':'ae','ఐ':'ai','ఒ':'o','ఓ':'oo','ఔ':'au',
-    'ౠ':'ru','ౡ':'lu','ఌ':'lu'
+  // Telugu phonetic/Gunintham engine.
+  // Foundation: 36 consonants × 16 Gunintham/sign positions.
+  // Output is practical readable Roman Telugu, with candidate spellings
+  // retained for sounds that commonly have more than one Roman form.
+
+  const TELUGU_VOWEL_CANDIDATES = {
+    'అ': ['a'],
+    'ఆ': ['aa','a','ā'],
+    'ఇ': ['i'],
+    'ఈ': ['ee','i','ī'],
+    'ఉ': ['u'],
+    'ఊ': ['oo','u','ū'],
+    'ఋ': ['ru','ṛu'],
+    'ౠ': ['roo','ru','ṝu'],
+    'ఌ': ['lu','ḷu'],
+    'ౡ': ['loo','lu','ḹu'],
+    'ఎ': ['e'],
+    'ఏ': ['ae','ee','e','ē'],
+    'ఐ': ['ai'],
+    'ఒ': ['o'],
+    'ఓ': ['oo','o','ō'],
+    'ఔ': ['au']
   };
 
-  const TE_CONSONANTS = {
-    'క':'k','ఖ':'kh','గ':'g','ఘ':'gh','ఙ':'ng',
-    'చ':'ch','ఛ':'chh','జ':'j','ఝ':'jh','ఞ':'ny',
-    'ట':'t','ఠ':'th','డ':'d','ఢ':'dh','ణ':'n',
-    'త':'t','థ':'th','ద':'d','ధ':'dh','న':'n',
-    'ప':'p','ఫ':'ph','బ':'b','భ':'bh','మ':'m',
-    'య':'y','ర':'r','ఱ':'r','ల':'l','ళ':'l','వ':'v',
-    'శ':'sh','ష':'sh','స':'s','హ':'h',
-    'క్ష':'ksh','జ్ఞ':'gn'
+  const TELUGU_MATRA_CANDIDATES = {
+    'ా': ['aa','a','ā'],
+    'ి': ['i'],
+    'ీ': ['ee','i','ī'],
+    'ు': ['u'],
+    'ూ': ['oo','u','ū'],
+    'ృ': ['ru','ṛu'],
+    'ౄ': ['roo','ru','ṝu'],
+    'ౢ': ['lu','ḷu'],
+    'ౣ': ['loo','lu','ḹu'],
+    'ె': ['e'],
+    'ే': ['ae','ee','e','ē'],
+    'ై': ['ai'],
+    'ొ': ['o'],
+    'ో': ['oo','o','ō'],
+    'ౌ': ['au']
   };
 
-  const TE_MATRAS = {
-    'ా':'aa','ి':'i','ీ':'ee','ు':'u','ూ':'oo',
-    'ృ':'ru','ె':'e','ే':'ae','ై':'ai','ొ':'o',
-    'ో':'oo','ౌ':'au','ౄ':'ru','ౢ':'lu','ౣ':'lu'
+  // All 36 consonants in the Gunintham source set.
+  // Each consonant has a primary practical Roman value plus alternatives
+  // where English spelling commonly varies.
+  const TELUGU_CONSONANT_CANDIDATES = {
+    'క':['k'], 'ఖ':['kh'], 'గ':['g'], 'ఘ':['gh'], 'ఙ':['ng'],
+    'చ':['ch','c'], 'ఛ':['chh','ch'], 'జ':['j'], 'ఝ':['jh'], 'ఞ':['ny','n'],
+    'ట':['t','ṭ'], 'ఠ':['th','ṭh'], 'డ':['d','ḍ'], 'ఢ':['dh','ḍh'], 'ణ':['n','ṇ'],
+    'త':['t'], 'థ':['th'], 'ద':['d'], 'ధ':['dh'], 'న':['n'],
+    'ప':['p'], 'ఫ':['ph','f'], 'బ':['b'], 'భ':['bh'], 'మ':['m'],
+    'య':['y'], 'ర':['r'], 'ల':['l'], 'వ':['v','w'],
+    'శ':['sh'], 'ష':['sh','ṣ'], 'స':['s'], 'హ':['h'], 'ళ':['l','ḷ'], 'ఱ':['r','rr','ṟ']
   };
 
-  const TE_SIGNS = {
-    'ం':'m','ః':'h','ఁ':'n','్':'','ౕ':'','ౖ':''
+  // Common conjuncts that must be treated as a single phonetic unit.
+  const TELUGU_CONJUNCTS = {
+    'క్ష':['ksha','kṣa'],
+    'జ్ఞ':['gnya','jna','jña'],
+    'శ్ర':['shra'],
+    'శ్వ':['shva'],
+    'స్త':['sta'],
+    'స్థ':['stha'],
+    'స్మ':['sma'],
+    'స్న':['sna'],
+    'స్ప':['spa'],
+    'స్వ':['sva'],
+    'త్ర':['tra'],
+    'థ్ర':['thra'],
+    'ద్ర':['dra'],
+    'ధ్ర':['dhra'],
+    'ప్ర':['pra'],
+    'బ్ర':['bra'],
+    'భ్ర':['bhra'],
+    'క్ర':['kra'],
+    'గ్ర':['gra'],
+    'ఘ్ర':['ghra'],
+    'క్ల':['kla'],
+    'గ్ల':['gla'],
+    'ప్ల':['pla'],
+    'బ్ల':['bla'],
+    'మ్ర':['mra'],
+    'ర్య':['rya'],
+    'వ్య':['vya']
   };
 
-  const TE_DIGITS = {
+  const TELUGU_SIGNS = {
+    '్':'',
+    'ః':'h',
+    'ఁ':'n'
+  };
+
+  const TELUGU_DIGITS = {
     '౦':'0','౧':'1','౨':'2','౩':'3','౪':'4',
     '౫':'5','౬':'6','౭':'7','౮':'8','౯':'9'
   };
 
-  function transliterateTeluguLine(line){
-    let out = '';
-    let i = 0;
+  // Complete 16-position Gunintham definition shared by every consonant.
+  // The last two positions are anusvara and visarga, which require special
+  // handling rather than a blind one-character substitution.
+  const GUNINTHAM_POSITIONS = [
+    {vowel:'అ', matra:null, name:'a'},
+    {vowel:'ఆ', matra:'ా', name:'aa'},
+    {vowel:'ఇ', matra:'ి', name:'i'},
+    {vowel:'ఈ', matra:'ీ', name:'ee'},
+    {vowel:'ఉ', matra:'ు', name:'u'},
+    {vowel:'ఊ', matra:'ూ', name:'oo'},
+    {vowel:'ఋ', matra:'ృ', name:'ru'},
+    {vowel:'ౠ', matra:'ౄ', name:'roo'},
+    {vowel:'ఎ', matra:'ె', name:'e'},
+    {vowel:'ఏ', matra:'ే', name:'ae'},
+    {vowel:'ఐ', matra:'ై', name:'ai'},
+    {vowel:'ఒ', matra:'ొ', name:'o'},
+    {vowel:'ఓ', matra:'ో', name:'oo'},
+    {vowel:'ఔ', matra:'ౌ', name:'au'},
+    {vowel:'అం', matra:'ం', name:'anusvara'},
+    {vowel:'అః', matra:'ః', name:'visarga'}
+  ];
 
-    while (i < line.length) {
-      const ch = line[i];
+  // The user's approved worship-lyrics spellings override generic phonetics.
+  const PREFERRED_TELUGU_ROMAN = {
+    "స్తోత్రమయా":"Sthothramayaa","నా":"Naa","యేసయ్యా":"Yesayyaa",
+    "స్తుతులు":"Sthuthulu","నీకే":"Neeke","చెల్లింతు":"Chellinthu",
+    "అధిక":"Adhika","స్తోత్రము":"Sthothramu","నొందదగిన":"Nondadagina",
+    "వాడా":"Vaadaa","కరువులోనా":"Karuvulonaa","కష్టాలలోన":"Kashtaalalona",
+    "లేమిలోన":"Laemiloona","సమృద్ధిలోన":"Samruddhiloona","స్తుతి":"Sthuthi",
+    "యాగము":"Yaagamu","చెల్లింతును":"Chellinthunu","అర్పణ":"Arpana",
+    "అర్పింతును":"Arpinthunu","నీవు":"Neevu","చేసిన":"Chesina",
+    "ఉపకారములను":"Upakaaramulanu","తలచి":"Talachi",
+    "స్తోత్రింతును":"Sthothrinthunu","సజీవయాగముగా":"Sajeevayaagamuga",
+    "సమర్పింతును":"Samarpinthunu","ప్రాణార్పణముగా":"Praanaarpanamuga",
+    "పోయబడెదను":"Poyabadedanu","ఉదయమున":"Udayamuna",
+    "స్తోత్రబలితో":"Sthothrabalitho","సాయంకాలము":"Saayankaalamu",
+    "నైవేద్యముతో":"Naivedyamutho","ఇంపైన":"Impaina","సువాసన":"Suvaasana",
+    "సుగంధ":"Sugandha","హోమము":"Homamu"
+  };
 
-      // Preserve Latin/ASCII text, punctuation and spaces.
-      if (!/[\u0C00-\u0C7F]/.test(ch)) {
-        out += TE_DIGITS[ch] || ch;
-        i++;
-        continue;
-      }
+  const PREFERRED_ROMAN_TELUGU = Object.fromEntries(
+    Object.entries(PREFERRED_TELUGU_ROMAN).map(([te,en])=>[en,te])
+  );
 
-      // Telugu conjuncts such as క్ష and జ్ఞ.
-      let consonant = null;
-      let consumed = 1;
-
-      if (i + 1 < line.length) {
-        const pair = line.slice(i, i + 2);
-        if (TE_CONSONANTS[pair]) {
-          consonant = pair;
-          consumed = 2;
-        }
-      }
-
-      if (!consonant && TE_CONSONANTS[ch]) {
-        consonant = ch;
-      }
-
-      if (consonant) {
-        out += TE_CONSONANTS[consonant];
-        i += consumed;
-
-        // Virama: consonant has no inherent 'a'.
-        if (line[i] === '్') {
-          i++;
-          continue;
-        }
-
-        // Dependent vowel sign.
-        if (TE_MATRAS[line[i]]) {
-          out += TE_MATRAS[line[i]];
-          i++;
-        } else {
-          // Telugu consonants carry the inherent 'a'.
-          out += 'a';
-        }
-        continue;
-      }
-
-      if (TE_VOWELS[ch]) {
-        out += TE_VOWELS[ch];
-        i++;
-        continue;
-      }
-
-      if (TE_MATRAS[ch]) {
-        out += TE_MATRAS[ch];
-        i++;
-        continue;
-      }
-
-      if (TE_SIGNS[ch] !== undefined) {
-        out += TE_SIGNS[ch];
-        i++;
-        continue;
-      }
-
-      out += ch;
-      i++;
-    }
-
-    return out;
+  function teluguAnusvaraCandidates(nextChar){
+    // Context-sensitive practical pronunciation. The exact sound may vary
+    // by word and speaker, so candidates are returned in ranked order.
+    if(!nextChar) return ['m','n'];
+    if(/[కఖగఘ]/.test(nextChar)) return ['ng','m','n'];
+    if(/[చఛజఝ]/.test(nextChar)) return ['n','m','ny'];
+    if(/[టఠడఢణ]/.test(nextChar)) return ['n','m'];
+    if(/[తథదధన]/.test(nextChar)) return ['n','m'];
+    if(/[పఫబభమ]/.test(nextChar)) return ['m','n'];
+    if(/[యరలళవశషసహ]/.test(nextChar)) return ['m','n'];
+    return ['m','n'];
   }
 
-  function transliterateTelugu(text){
-    return text
-      .replace(/\r/g, '')
-      .split('\n')
-      .map(line => transliterateTeluguLine(line))
-      .join('\n')
-      .replace(/[ ]{2,}/g, ' ')
-      .trim();
+  function normalizeTeluguDigitsToEnglish(text){
+    return String(text||'').replace(/[౦-౯]/g,ch=>TELUGU_DIGITS[ch]||ch);
+  }
+
+  function isNumericToken(token){
+    return /^[0-9]+(?:[.,][0-9]+)?$/.test(String(token||'').trim());
   }
 
   function hasTelugu(text){
     return /[\u0C00-\u0C7F]/.test(text);
   }
 
+  function isTeluguLetter(ch){
+    return /[\u0C00-\u0C7F]/.test(ch);
+  }
+
+  function titleCaseLyricWord(value){
+    if(!value) return value;
+    return value.charAt(0).toUpperCase()+value.slice(1);
+  }
+
+  function getConsonantCandidates(ch){
+    return TELUGU_CONSONANT_CANDIDATES[ch] || [ch];
+  }
+
+  function getMatraCandidates(matra){
+    return TELUGU_MATRA_CANDIDATES[matra] || [matra];
+  }
+
+  // Returns the primary readable Romanization for one Telugu word.
+  function transliterateTeluguWordPhonetic(word){
+    if(!word) return word;
+    if(PREFERRED_TELUGU_ROMAN[word]) return PREFERRED_TELUGU_ROMAN[word];
+    if(isNumericToken(word)) return normalizeTeluguDigitsToEnglish(word);
+
+    let out='';
+    let i=0;
+
+    while(i<word.length){
+      const ch=word[i];
+
+      if(TELUGU_DIGITS[ch]){
+        out+=TELUGU_DIGITS[ch];
+        i++;
+        continue;
+      }
+
+      // Independent vowel.
+      if(TELUGU_VOWEL_CANDIDATES[ch]){
+        out+=TELUGU_VOWEL_CANDIDATES[ch][0];
+        i++;
+        continue;
+      }
+
+      // Conjuncts / clusters before individual consonants.
+      let conjunct=null;
+      for(const key of Object.keys(TELUGU_CONJUNCTS).sort((a,b)=>b.length-a.length)){
+        if(word.startsWith(key,i)){
+          conjunct=key;
+          break;
+        }
+      }
+
+      if(conjunct){
+        const base=TELUGU_CONJUNCTS[conjunct][0];
+        out+=base;
+        i+=conjunct.length;
+        continue;
+      }
+
+      if(TELUGU_CONSONANT_CANDIDATES[ch]){
+        const base=TELUGU_CONSONANT_CANDIDATES[ch][0];
+        out+=base;
+        i++;
+
+        // Virama: consonant has no inherent vowel.
+        if(word[i]==='్'){
+          i++;
+          continue;
+        }
+
+        // Gunintham vowel sign.
+        if(word[i] && TELUGU_MATRA_CANDIDATES[word[i]]){
+          out+=TELUGU_MATRA_CANDIDATES[word[i]][0];
+          i++;
+          continue;
+        }
+
+        // Anusvara immediately after consonant.
+        if(word[i]==='ం'){
+          const next=word[i+1] || '';
+          out+=teluguAnusvaraCandidates(next)[0];
+          i++;
+          continue;
+        }
+
+        // Visarga.
+        if(word[i]==='ః'){
+          out+='h';
+          i++;
+          continue;
+        }
+
+        // No vowel sign = inherent 'a'.
+        out+='a';
+        continue;
+      }
+
+      // Anusvara after an independent vowel or standalone.
+      if(ch==='ం'){
+        out+=teluguAnusvaraCandidates(word[i+1]||'')[0];
+        i++;
+        continue;
+      }
+
+      if(ch==='ః'){
+        out+='h';
+        i++;
+        continue;
+      }
+
+      if(ch==='ఁ'){
+        out+='n';
+        i++;
+        continue;
+      }
+
+      if(ch==='్'){
+        i++;
+        continue;
+      }
+
+      out+=ch;
+      i++;
+    }
+
+    return titleCaseLyricWord(normalizeTeluguDigitsToEnglish(out));
+  }
+
+  function buildTeluguWordCandidates(word){
+    if(!word) return [];
+    if(PREFERRED_TELUGU_ROMAN[word]){
+      const preferred=PREFERRED_TELUGU_ROMAN[word];
+      return [preferred,...buildRomanizationVariants(preferred).filter(v=>v!==preferred)].slice(0,8);
+    }
+
+    const base=transliterateTeluguWordPhonetic(word);
+    if(!base || base===word) return [word];
+
+    const candidates=[base];
+    const add=v=>{
+      if(v && !candidates.includes(v)) candidates.push(v);
+    };
+
+    // Candidate vowel spellings.
+    add(base.replace(/ae/g,'ee'));
+    add(base.replace(/ae/g,'e'));
+    add(base.replace(/oo/g,'o'));
+    add(base.replace(/ee/g,'e'));
+
+    // Candidate consonant spellings.
+    add(base.replace(/ph/g,'f'));
+    add(base.replace(/chh/g,'ch'));
+    add(base.replace(/sh/g,'s'));
+    add(base.replace(/th/g,'t'));
+    add(base.replace(/dh/g,'d'));
+    add(base.replace(/bh/g,'b'));
+
+    // Practical Telugu Christian-song convention: initial "stha/sthi"
+    // often appears as "Stha/Sthi".
+    add(base.replace(/^S?th/i,'Sth'));
+
+    return [...new Set(candidates)].slice(0,8);
+  }
+
+  function transliterateTeluguLine(line){
+    const parts=String(line||'').split(/(\s+|[.,!?;:'"()\[\]{}|—–-]+)/);
+    return parts.map(part=>{
+      if(!part || /^\s+$/.test(part) || /^[.,!?;:'"()\[\]{}|—–-]+$/.test(part)){
+        return part;
+      }
+      if(isNumericToken(part)) return normalizeTeluguDigitsToEnglish(part);
+      return hasTelugu(part) ? transliterateTeluguWordPhonetic(part) : part;
+    }).join('');
+  }
+
+  function transliterateTelugu(text){
+    return String(text||'')
+      .replace(/\r/g,'')
+      .split('\n')
+      .map(transliterateTeluguLine)
+      .join('\n')
+      .trim();
+  }
 
   // High-quality Romanized Telugu -> Telugu script conversion.
-  // Aksharamukha is used in the browser; the local fallback is only used
+  // Google Input Tools is used in the browser; the local fallback is only used
   // if the network library cannot be loaded.
   function looksRomanizedTelugu(text){
     if (!text || /[\u0C00-\u0C7F]/.test(text)) return false;
@@ -2300,77 +2664,564 @@ Blank lines separate verses."></textarea>
     return hits >= 1 || patternMatches >= 2;
   }
 
-  // Google Input Tools Telugu transliteration.
-  // Uses Google's established Telugu transliteration engine instead of
-  // character-by-character conversion or the previous IndicXlit wrapper.
-  // Telugu transliteration input method: te-t-i0-und.
-  const googleTeluguCache = new Map();
+  // Google Input Tools transliteration.
+  // Uses the public Google Input Tools hosted API for BOTH directions:
+  //   Telugu -> English (native-to-Roman)
+  //   English/Romanized Telugu -> Telugu (Roman-to-native)
+  // Telugu is language code "te".
+  // Numeric tokens are never sent for transliteration and remain English digits.
+  const AKSHARAMUKHA_API = 'https://aksharamukha-plugin.appspot.com/api/public';
+  const ai4BharatCache = new Map();
+  const ai4BharatSuggestionsCache = new Map();
 
-  async function googleTeluguWord(word){
-    if(!word || !/^[A-Za-z0-9]+$/.test(word)) return word;
+  function ai4BharatCacheKey(direction, word){
+    return `${direction}:${word}`.toLowerCase();
+  }
 
-    const key=word.toLowerCase();
-    if(googleTeluguCache.has(key)) return googleTeluguCache.get(key);
+  // Keep numeric tokens unchanged in both directions.
+  // Telugu digits are normalized to ordinary English digits only.
+  function isNumericToken(token){
+    return /^[0-9]+(?:[.,][0-9]+)?$/.test(String(token || '').trim());
+  }
+
+  function normalizeTeluguDigitsToEnglish(text){
+    if(!text) return text || '';
+    const map = {
+      '౦':'0','౧':'1','౨':'2','౩':'3','౪':'4',
+      '౫':'5','౬':'6','౭':'7','౮':'8','౯':'9'
+    };
+    return String(text).replace(/[౦-౯]/g, ch => map[ch] || ch);
+  }
+
+  // Google Input Tools REST transliteration.
+  // Telugu -> Roman uses the readable/colloquial romanization schemes.
+  // Roman -> Telugu accepts RomanReadable and RomanColloquial input.
+  async function aksharamukhaConvert(source, target, text, extra={}){
+    if(!text) return '';
+
+    const params = new URLSearchParams({
+      source,
+      target,
+      text,
+      ...extra
+    });
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
 
     try{
-      const url =
-        'https://inputtools.google.com/request' +
-        '?text=' + encodeURIComponent(word) +
-        '&itc=te-t-i0-und' +
-        '&num=8&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage';
+      const response = await fetch(
+        AKSHARAMUKHA_API + '?' + params.toString(),
+        {
+          method:'GET',
+          mode:'cors',
+          cache:'no-store',
+          signal:controller.signal
+        }
+      );
 
-      const response=await fetch(url,{mode:'cors'});
-      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+      if(!response.ok){
+        throw new Error(`Google Input Tools HTTP ${response.status}`);
+      }
+
+      return await response.text();
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
+
+  // Google Input Tools: Roman/phonetic Telugu -> Telugu script.
+  // The endpoint returns multiple candidate words, which is also used by
+  // the word-level suggestion popup.
+  const GOOGLE_INPUT_TOOLS_URL='https://inputtools.google.com/request';
+  const googleTeluguSuggestionsCache=new Map();
+
+  async function googleInputToolsSuggestions(word){
+    if(!word || isNumericToken(word)) return [word];
+    if(!/^[A-Za-z0-9]+$/.test(word)) return [word];
+
+    const key=word.toLowerCase();
+    if(googleTeluguSuggestionsCache.has(key)){
+      return googleTeluguSuggestionsCache.get(key);
+    }
+
+    const url=GOOGLE_INPUT_TOOLS_URL+
+      '?text='+encodeURIComponent(word)+
+      '&itc=te-t-i0-und'+
+      '&num=8&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage';
+
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),12000);
+
+    try{
+      const response=await fetch(url,{
+        method:'GET',
+        mode:'cors',
+        cache:'no-store',
+        signal:controller.signal
+      });
+
+      if(!response.ok){
+        throw new Error(`Google Input Tools HTTP ${response.status}`);
+      }
 
       const data=await response.json();
+      const suggestions=[];
 
-      // Google Input Tools response:
-      // ["SUCCESS", [[input, [suggestion1, suggestion2, ...]], ...]]
       if(Array.isArray(data) && data[0]==='SUCCESS' && Array.isArray(data[1])){
-        const item=data[1].find(x =>
-          Array.isArray(x) &&
-          Array.isArray(x[1]) &&
-          x[1].some(v => /[\u0C00-\u0C7F]/.test(v))
-        );
-
-        if(item && item[1]){
-          const native=item[1].find(v => /[\u0C00-\u0C7F]/.test(v));
-          if(native){
-            googleTeluguCache.set(key,native);
-            return native;
+        for(const item of data[1]){
+          if(!Array.isArray(item) || !Array.isArray(item[1])) continue;
+          for(const candidate of item[1]){
+            if(typeof candidate==='string' &&
+               /[\u0C00-\u0C7F]/.test(candidate) &&
+               !suggestions.includes(candidate)){
+              suggestions.push(candidate);
+            }
           }
         }
       }
-    }catch(err){
-      console.warn('Google Telugu transliteration failed for:',word,err);
-    }
 
-    return word;
+      if(!suggestions.length){
+        throw new Error('Google Input Tools returned no Telugu suggestions');
+      }
+
+      const result=suggestions.slice(0,8);
+      googleTeluguSuggestionsCache.set(key,result);
+      return result;
+    }finally{
+      clearTimeout(timer);
+    }
   }
 
-  async function romanizedTeluguToTelugu(text){
-    const lines=text.replace(/\r/g,'').split('\n');
+  async function googleInputToolsWord(word){
+    const suggestions=await googleInputToolsSuggestions(word);
+    return suggestions[0] || word;
+  }
+
+  async function googleInputToolsRomanToTelugu(text){
+    const lines=String(text||'').replace(/\r/g,'').split('\n');
     const output=[];
 
     for(const line of lines){
       const parts=line.split(/(\s+|[.,!?;:'"()\[\]{}|—–-]+)/);
       const converted=[];
 
-      // Convert sequentially so spacing/punctuation stays exactly as supplied.
       for(const part of parts){
-        if(/^[A-Za-z0-9]+$/.test(part)){
-          converted.push(await googleTeluguWord(part));
+        if(!part || /^\s+$/.test(part) ||
+           /^[.,!?;:'"()\[\]{}|—–-]+$/.test(part) ||
+           isNumericToken(part)){
+          converted.push(part);
+          continue;
+        }
+
+        if(/^[A-Za-z]+$/.test(part)){
+          try{
+            converted.push(await googleInputToolsWord(part));
+          }catch(err){
+            console.warn('Google Input Tools failed for:',part,err);
+            converted.push(part);
+          }
         }else{
           converted.push(part);
         }
       }
-
       output.push(converted.join(''));
     }
 
-    return output.join('\n');
+    return normalizeTeluguDigitsToEnglish(output.join('\n'));
   }
 
+  // Google Input Tools does not expose a supported Telugu -> Roman operation.
+  // Keep the existing local Telugu romanizer for that direction.
+  async function googleInputToolsTeluguToRomanText(text){
+    return transliterateTelugu(text);
+  }
+
+  async function googleInputToolsRomanSuggestions(word){
+    const exact=await googleInputToolsSuggestions(word);
+    const lower=String(word||'').toLowerCase();
+    const preferredKey=Object.keys(PREFERRED_ROMAN_TELUGU)
+      .find(k=>k.toLowerCase()===lower);
+    if(preferredKey){
+      return [PREFERRED_ROMAN_TELUGU[preferredKey], ...exact.filter(v=>v!==PREFERRED_ROMAN_TELUGU[preferredKey])].slice(0,8);
+    }
+    return exact;
+  }
+
+  async function googleInputToolsTeluguToRomanSuggestions(word){
+    return buildTeluguWordCandidates(word);
+  }
+
+  async function googleInputToolsTeluguToRomanWord(word){
+    return transliterateTeluguWordPhonetic(word);
+  }
+
+  async function googleInputToolsRomanToTeluguWord(word){
+    if(PREFERRED_ROMAN_TELUGU[word]) return PREFERRED_ROMAN_TELUGU[word];
+    const lower=String(word||'').toLowerCase();
+    const found=Object.keys(PREFERRED_ROMAN_TELUGU).find(k=>k.toLowerCase()===lower);
+    if(found) return PREFERRED_ROMAN_TELUGU[found];
+    return googleInputToolsWord(word);
+  }
+
+  async function fetchExternalJSON(url){
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+
+    try{
+      const response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+
+      if(!response.ok){
+        throw new Error(`Google Input Tools HTTP ${response.status}`);
+      }
+
+      return await response.json();
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
+  async function ai4BharatRomanToTeluguSuggestions(word){
+    return googleInputToolsRomanSuggestions(word);
+  }
+
+  async function ai4BharatRomanToTeluguWord(word){
+    return googleInputToolsRomanToTeluguWord(word);
+  }
+
+  async function ai4BharatTeluguToRomanSuggestions(word){
+    return googleInputToolsTeluguToRomanSuggestions(word);
+  }
+
+  async function ai4BharatTeluguToRomanWord(word){
+    return googleInputToolsTeluguToRomanWord(word);
+  }
+
+  function buildRomanizationVariants(base){
+    if(!base) return [];
+    const variants=[];
+    const add=v=>{
+      v=(v || '').replace(/[౦-౯]/g,ch=>TE_DIGITS[ch]||ch).replace(/\s{2,}/g,' ').trim();
+      if(v && !variants.includes(v) && !isNumericToken(v)) variants.push(v);
+    };
+
+    add(base);
+    // These are alternatives for presentation only. The first candidate is
+    // always the Google Input Tools model result.
+    add(base.replace(/aa/g,'a'));
+    add(base.replace(/ee/g,'i'));
+    add(base.replace(/oo/g,'u'));
+    add(base.replace(/ae/g,'e'));
+    add(base.replace(/th/g,'t'));
+    add(base.replace(/dh/g,'d'));
+    add(base.replace(/bh/g,'b'));
+    add(base.replace(/ph/g,'f'));
+    add(base.replace(/sh/g,'s'));
+    add(base.replace(/chh/g,'ch'));
+    add(base.replace(/ny/g,'n'));
+    add(base.replace(/ng/g,'n'));
+    add(base.replace(/a(?=\b)/g,''));
+    return variants.slice(0,8);
+  }
+
+  async function romanizedTeluguToTelugu(text){
+    return googleInputToolsRomanToTelugu(text);
+  }
+
+  async function transliterateTeluguPreservingNumbers(text){
+    return transliterateTelugu(text);
+  }
+
+  async function getGoogleInputToolsSuggestions(word,direction){
+    if(direction==='toEnglish'){
+      return ai4BharatTeluguToRomanSuggestions(word);
+    }
+    return ai4BharatRomanToTeluguSuggestions(word);
+  }
+
+  let suggestionState=null;
+  let suggestionRequestId=0;
+  let suggestionActiveIndex=0;
+
+  function closeTranslitSuggestions(){
+    const popup=$('translitSuggestionPopup');
+    if(popup){
+      popup.classList.remove('open');
+      popup.innerHTML='';
+    }
+    suggestionState=null;
+    suggestionActiveIndex=0;
+  }
+
+  function positionTranslitSuggestions(field){
+    const popup=$('translitSuggestionPopup');
+    if(!popup) return;
+    const rect=field.getBoundingClientRect();
+    const width=Math.min(300,Math.max(220,window.innerWidth*0.8));
+    popup.style.width=width+'px';
+
+    // Keep the popup COMPLETELY inside the same textarea that triggered it.
+    // The previous version started at the textarea's top edge, so the popup
+    // could extend downward into the opposite textarea.
+    const padding=8;
+    let left=rect.left+padding;
+    left=Math.max(padding, Math.min(left, window.innerWidth-width-padding));
+
+    // The popup must not cross into the other lyric field. Keep it within the
+    // source textarea rectangle and anchor it to the bottom of that field.
+    const maxHeight=Math.min(170, Math.max(90, rect.height-padding*2));
+    popup.style.maxHeight=maxHeight+'px';
+
+    let top=rect.bottom-maxHeight-padding;
+    top=Math.max(rect.top+padding, top);
+    top=Math.min(top, window.innerHeight-maxHeight-padding);
+
+    popup.style.left=left+'px';
+    popup.style.top=top+'px';
+  }
+
+  function getWordRange(field,direction){
+    const value=field.value || '';
+    if(!value) return null;
+
+    const start=field.selectionStart ?? 0;
+    const end=field.selectionEnd ?? start;
+    const isTe=direction==='toEnglish';
+    const pattern=isTe ? /[\u0C00-\u0C7F\u200C\u200D]+/g : /[A-Za-z0-9]+/g;
+
+    // If a word is selected, use exactly that selection when it is one token.
+    if(end>start){
+      const selected=value.slice(start,end).trim();
+      if(selected && !/[\s\n]/.test(selected)){
+        return {start,end,word:selected};
+      }
+    }
+
+    let match;
+    while((match=pattern.exec(value))){
+      if(start>=match.index && start<=match.index+match[0].length){
+        return {start:match.index,end:match.index+match[0].length,word:match[0]};
+      }
+    }
+    return null;
+  }
+
+  // Find the corresponding word in the opposite lyrics field. The two lyric
+  // fields are line-aligned, so use the selected word's line and word number
+  // instead of copying character offsets (Telugu and Roman text have different
+  // lengths). If alignment cannot be established, fall back to the current
+  // transliteration of the selected word.
+  function getCorrespondingTargetRange(state,target){
+    const source=state.field.value || '';
+    const targetValue=target.value || '';
+    const sourceLineStart=source.lastIndexOf('\n',state.start-1)+1;
+    const sourceLineEnd=source.indexOf('\n',state.end);
+    const sourceEnd=sourceLineEnd===-1 ? source.length : sourceLineEnd;
+    const sourceLine=source.slice(sourceLineStart,sourceEnd);
+    const sourceBefore=sourceLine.slice(0,state.start-sourceLineStart);
+    const sourcePattern=state.direction==='toEnglish'
+      ? /[\u0C00-\u0C7F\u200C\u200D]+/g
+      : /[A-Za-z0-9]+/g;
+    const sourceTokens=[...sourceBefore.matchAll(sourcePattern)];
+    const tokenIndex=sourceTokens.length;
+
+    const targetLineStart=sourceLineStart<=targetValue.length
+      ? (()=>{
+          const lineBreaks=source.slice(0,sourceLineStart).match(/\n/g);
+          let pos=0;
+          const lines=targetValue.split('\n');
+          const lineNumber=lineBreaks ? lineBreaks.length : 0;
+          for(let i=0;i<lineNumber && i<lines.length;i++) pos+=lines[i].length+1;
+          return pos;
+        })()
+      : 0;
+
+    const targetLines=targetValue.split('\n');
+    const lineNumber=(source.slice(0,sourceLineStart).match(/\n/g)||[]).length;
+    const targetLine=targetLines[lineNumber] || '';
+    const targetPattern=state.direction==='toEnglish'
+      ? /[A-Za-z0-9]+/g
+      : /[\u0C00-\u0C7F\u200C\u200D]+/g;
+    const targetMatches=[...targetLine.matchAll(targetPattern)];
+
+    if(targetMatches[tokenIndex]){
+      const m=targetMatches[tokenIndex];
+      return {
+        start:targetLineStart+m.index,
+        end:targetLineStart+m.index+m[0].length,
+        word:m[0]
+      };
+    }
+
+    // Fallback: locate the existing transliteration of the selected source word.
+    let fallbackWord='';
+    if(state.direction==='toEnglish'){
+      fallbackWord=ai4BharatCache.get(ai4BharatCacheKey('toEnglish',state.word)) || '';
+      if(!fallbackWord){
+        fallbackWord='';
+      }
+    }
+    if(fallbackWord){
+      const idx=targetValue.indexOf(fallbackWord);
+      if(idx>=0) return {start:idx,end:idx+fallbackWord.length,word:fallbackWord};
+    }
+
+    return null;
+  }
+
+  function renderTranslitSuggestions(items, state){
+    const popup=$('translitSuggestionPopup');
+    if(!popup) return;
+    popup.innerHTML='';
+
+    const title=document.createElement('div');
+    title.className='translit-suggestion-title';
+    title.textContent=state.direction==='toEnglish'
+      ? `English suggestions for “${state.word}”`
+      : `Telugu suggestions for “${state.word}”`;
+    popup.appendChild(title);
+
+    if(!items.length){
+      const empty=document.createElement('div');
+      empty.className='translit-suggestion-empty';
+      empty.textContent='No alternate suggestions found.';
+      popup.appendChild(empty);
+      popup.classList.add('open');
+      positionTranslitSuggestions(state.field);
+      return;
+    }
+
+    items.forEach((item,index)=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='translit-suggestion-item'+(index===0?' active':'');
+      btn.setAttribute('role','option');
+      btn.textContent=item;
+      btn.dataset.index=String(index);
+      btn.onmousedown=e=>e.preventDefault();
+      btn.onclick=()=>applyTranslitSuggestion(index);
+      popup.appendChild(btn);
+    });
+
+    popup.classList.add('open');
+    positionTranslitSuggestions(state.field);
+    suggestionActiveIndex=0;
+  }
+
+  async function showTranslitSuggestionsForField(field,direction){
+    if(!field || !field.value) return;
+    const range=getWordRange(field,direction);
+    if(!range || !range.word || isNumericToken(range.word)){
+      closeTranslitSuggestions();
+      return;
+    }
+
+    const requestId=++suggestionRequestId;
+    suggestionState={field,direction,word:range.word,start:range.start,end:range.end,items:[]};
+    showTranslitStatus('Loading word suggestions…');
+
+    let items=[];
+    items=await getGoogleInputToolsSuggestions(range.word,direction);
+
+    if(requestId!==suggestionRequestId || !suggestionState) return;
+    suggestionState.items=items;
+    renderTranslitSuggestions(items,suggestionState);
+    hideTranslitStatus();
+  }
+
+  function applyTranslitSuggestion(index){
+    if(!suggestionState) return;
+    const state=suggestionState;
+    const replacement=state.items[index];
+    if(!replacement) return;
+
+    const targetId=state.direction==='toEnglish' ? 'enLyrics' : 'teLyrics';
+    const target=$(targetId);
+    const targetRange=getCorrespondingTargetRange(state,target);
+    if(!targetRange){
+      closeTranslitSuggestions();
+      return;
+    }
+
+    const before=target.value;
+    const after=before.slice(0,targetRange.start)+replacement+before.slice(targetRange.end);
+
+    // Save a word-level undo checkpoint on the target field.
+    setTranslitFieldValue(target,after);
+    target.focus();
+    const cursor=targetRange.start+replacement.length;
+    target.setSelectionRange(cursor,cursor);
+
+    closeTranslitSuggestions();
+    hideTranslitStatus();
+  }
+
+  function updateSuggestionHighlight(){
+    const buttons=[...document.querySelectorAll('.translit-suggestion-item')];
+    buttons.forEach((btn,i)=>btn.classList.toggle('active',i===suggestionActiveIndex));
+    if(buttons[suggestionActiveIndex]) buttons[suggestionActiveIndex].scrollIntoView({block:'nearest'});
+  }
+
+  function handleSuggestionKeyboard(e){
+    if(!suggestionState) return;
+    const buttons=[...document.querySelectorAll('.translit-suggestion-item')];
+    if(!buttons.length) return;
+
+    if(e.key==='ArrowDown'){
+      e.preventDefault();
+      suggestionActiveIndex=(suggestionActiveIndex+1)%buttons.length;
+      updateSuggestionHighlight();
+    }else if(e.key==='ArrowUp'){
+      e.preventDefault();
+      suggestionActiveIndex=(suggestionActiveIndex-1+buttons.length)%buttons.length;
+      updateSuggestionHighlight();
+    }else if(e.key==='Enter'){
+      e.preventDefault();
+      applyTranslitSuggestion(suggestionActiveIndex);
+    }else if(e.key==='Escape'){
+      e.preventDefault();
+      closeTranslitSuggestions();
+    }
+  }
+
+  function bindTranslitSuggestionField(fieldId,direction){
+    const field=$(fieldId);
+    if(!field) return;
+
+    const trigger=()=>{
+      // Wait until browser finishes updating the textarea selection.
+      setTimeout(()=>showTranslitSuggestionsForField(field,direction),0);
+    };
+
+    field.addEventListener('mouseup',trigger);
+    field.addEventListener('keyup',e=>{
+      if(e.shiftKey || e.key==='ArrowLeft' || e.key==='ArrowRight' || e.key==='ArrowUp' || e.key==='ArrowDown'){
+        trigger();
+      }
+    });
+    field.addEventListener('dblclick',trigger);
+  }
+
+  bindTranslitSuggestionField('teLyrics','toEnglish');
+  bindTranslitSuggestionField('enLyrics','toTelugu');
+
+  document.addEventListener('keydown',handleSuggestionKeyboard,true);
+  document.addEventListener('mousedown',e=>{
+    const popup=$('translitSuggestionPopup');
+    if(!popup || !popup.classList.contains('open')) return;
+    if(e.target.closest('#translitSuggestionPopup')) return;
+    if(e.target===suggestionState?.field) return;
+    closeTranslitSuggestions();
+  });
+  window.addEventListener('resize',()=>{
+    if(suggestionState) positionTranslitSuggestions(suggestionState.field);
+  });
 
   function showTranslitStatus(message){
     let el=$('translitStatus');
@@ -2387,6 +3238,126 @@ Blank lines separate verses."></textarea>
   function hideTranslitStatus(){
     const el=$('translitStatus');
     if(el) el.hidden=true;
+  }
+
+  let transliterationRequestId = 0;
+  let autoTranslitTimer = null;
+  let suppressAutoTranslit = false;
+
+  // Programmatic transliteration changes are undoable with Ctrl+Z.
+  // The previous target value is kept as a one-step checkpoint. If the user
+  // starts typing afterward, the browser's normal textarea undo history takes
+  // over again.
+  const translitUndo = {
+    te: [],
+    en: []
+  };
+
+  function setTranslitFieldValue(field, value){
+    const key = field.id === 'teLyrics' ? 'te' : 'en';
+    const previous = field.value;
+
+    if(previous !== value){
+      translitUndo[key].push(previous);
+      // Keep the custom checkpoint focused on the latest refresh.
+      if(translitUndo[key].length > 10){
+        translitUndo[key].shift();
+      }
+    }
+
+    suppressAutoTranslit = true;
+    field.value = value;
+    suppressAutoTranslit = false;
+  }
+
+  function clearTranslitUndo(key){
+    translitUndo[key].length = 0;
+  }
+
+  function undoTransliteration(field){
+    const key = field.id === 'teLyrics' ? 'te' : 'en';
+    if(!translitUndo[key].length) return false;
+
+    const previous = translitUndo[key].pop();
+    suppressAutoTranslit = true;
+    field.value = previous;
+    suppressAutoTranslit = false;
+
+    field.focus();
+    field.setSelectionRange(previous.length, previous.length);
+    return true;
+  }
+
+  async function refreshTransliterationToEnglish(){
+    const requestId = ++transliterationRequestId;
+    const source = $('teLyrics').value || '';
+    if(!source.trim()) return;
+
+    const button = $('translitToEnglishBtn');
+    if(button) button.disabled = true;
+    showTranslitStatus('Google Input Tools: refreshing English transliteration…');
+
+    try{
+      const result = await transliterateTeluguPreservingNumbers(source);
+      if(requestId === transliterationRequestId){
+        if(result && result !== source){
+          setTranslitFieldValue($('enLyrics'), result);
+        }else{
+          showTranslitStatus('Google Input Tools did not return an English transliteration.');
+          setTimeout(hideTranslitStatus, 2200);
+        }
+      }
+    }catch(err){
+      console.error(err);
+      showTranslitStatus('Unable to reach Google Input Tools. Check your internet connection.');
+      setTimeout(hideTranslitStatus, 2500);
+    }finally{
+      if(requestId === transliterationRequestId){
+        if(button) button.disabled = false;
+        hideTranslitStatus();
+      }
+    }
+  }
+
+  async function refreshTransliterationToTelugu(){
+    const requestId = ++transliterationRequestId;
+    const source = $('enLyrics').value || '';
+    if(!source.trim()) return;
+
+    const button = $('translitToTeluguBtn');
+    if(button) button.disabled = true;
+    showTranslitStatus('Google Input Tools: refreshing Telugu transliteration…');
+
+    try{
+      const result = normalizeTeluguDigitsToEnglish(
+        await romanizedTeluguToTelugu(source)
+      );
+      if(requestId === transliterationRequestId){
+        if(result && result !== source){
+          setTranslitFieldValue($('teLyrics'), result);
+        }else{
+          showTranslitStatus('Google Input Tools did not return a Telugu transliteration.');
+          setTimeout(hideTranslitStatus, 2200);
+        }
+      }
+    }catch(err){
+      console.error(err);
+      showTranslitStatus('Unable to reach Google Input Tools. Check your internet connection.');
+      setTimeout(hideTranslitStatus, 2500);
+    }finally{
+      if(requestId === transliterationRequestId){
+        if(button) button.disabled = false;
+        hideTranslitStatus();
+      }
+    }
+  }
+
+  function scheduleAutoTransliteration(direction){
+    clearTimeout(autoTranslitTimer);
+    autoTranslitTimer = setTimeout(() => {
+      if(direction === 'toEnglish') refreshTransliterationToEnglish();
+      else refreshTransliterationToTelugu();
+    }, 450);
   }
 
   async function addSongFromLocalText(songName, lyrics){
@@ -2413,10 +3384,10 @@ Blank lines separate verses."></textarea>
         bilingual: true,
         single: '',
         te: cleanLyrics,
-        en: transliterateTelugu(cleanLyrics)
+        en: await transliterateTeluguPreservingNumbers(cleanLyrics)
       };
     } else if (romanizedTelugu) {
-      showTranslitStatus('Converting Romanized Telugu to Telugu…');
+      showTranslitStatus('Google Input Tools: converting Romanized Telugu to Telugu…');
       const teluguScript = await romanizedTeluguToTelugu(cleanLyrics);
       hideTranslitStatus();
 
@@ -2584,6 +3555,8 @@ Blank lines separate verses."></textarea>
     $('teLyrics').value = '';
     $('enLyrics').value = '';
     $('bilingual').checked = false;
+    clearTranslitUndo('te');
+    clearTranslitUndo('en');
     syncImportFields();
 
     drawer.classList.add('open');
@@ -2655,10 +3628,106 @@ Blank lines separate verses."></textarea>
   $('bilingual').onchange = syncImportFields;
   $('editBilingual').onchange = syncEditFields;
 
+  // Inline refresh buttons beside each lyrics field.
+  $('translitToEnglishBtn').onclick = refreshTransliterationToEnglish;
+  $('translitToTeluguBtn').onclick = refreshTransliterationToTelugu;
+
   function syncImportFields() {
     $('singleBox').style.display = $('bilingual').checked ? 'none' : 'block';
     $('biBox').style.display = $('bilingual').checked ? 'block' : 'none';
   }
+
+  // Live transliteration while adding a song through the + button.
+  // Reuses the existing Telugu -> Roman transliteration and
+  // Romanized Telugu -> Telugu Google Input Tools logic.
+  let translitInputTimer = null;
+  let translitRequestId = 0;
+
+  function scheduleAutoTransliteration(source){
+    if(!$('bilingual').checked) return;
+
+    clearTimeout(translitInputTimer);
+    const requestId = ++translitRequestId;
+
+    translitInputTimer = setTimeout(async () => {
+      const teField = $('teLyrics');
+      const enField = $('enLyrics');
+
+      if(source === 'te'){
+        const teText = teField.value;
+        if(!teText.trim()){
+          clearTranslitUndo('en');
+          enField.value = '';
+          hideTranslitStatus();
+          return;
+        }
+
+        if(hasTelugu(teText)){
+          const result = await transliterateTeluguPreservingNumbers(teText);
+          if(requestId === translitRequestId){
+            setTranslitFieldValue(enField, result);
+          }
+        }
+        hideTranslitStatus();
+        return;
+      }
+
+      const enText = enField.value;
+      if(!enText.trim()){
+        clearTranslitUndo('te');
+        teField.value = '';
+        hideTranslitStatus();
+        return;
+      }
+
+      if(looksRomanizedTelugu(enText)){
+        showTranslitStatus('Google Input Tools: converting Romanized Telugu to Telugu…');
+        try{
+          const teluguScript = normalizeTeluguDigitsToEnglish(
+            await romanizedTeluguToTelugu(enText)
+          );
+          if(requestId === translitRequestId){
+            setTranslitFieldValue(teField, teluguScript);
+          }
+        }catch(err){
+          console.warn('Live Telugu transliteration failed:', err);
+        }finally{
+          if(requestId === translitRequestId) hideTranslitStatus();
+        }
+      }else{
+        hideTranslitStatus();
+      }
+    }, 450);
+  }
+
+  // A normal edit clears the special transliteration checkpoint so Ctrl+Z
+  // returns to the browser's native textarea undo behavior.
+  $('teLyrics').addEventListener('input', () => {
+    if(!suppressAutoTranslit){
+      clearTranslitUndo('te');
+      scheduleAutoTransliteration('te');
+    }
+  });
+
+  $('enLyrics').addEventListener('input', () => {
+    if(!suppressAutoTranslit){
+      clearTranslitUndo('en');
+      scheduleAutoTransliteration('en');
+    }
+  });
+
+  // Ctrl+Z / Cmd+Z: undo the most recent programmatic transliteration
+  // refresh first; otherwise let the browser perform its normal undo.
+  ['teLyrics','enLyrics'].forEach(id => {
+    $(id).addEventListener('keydown', e => {
+      if((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z'){
+        if(undoTransliteration($(id))){
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    });
+  });
 
   function syncEditFields() {
     $('editSingleBox').style.display = $('editBilingual').checked ? 'none' : 'block';
@@ -3018,7 +4087,7 @@ Blank lines separate verses."></textarea>
     title.textContent = songName || 'Untitled Song';
     page.appendChild(title);
 
-    const translitTitle = translitName || (isTe(songName) ? transliterateTelugu(songName) : '');
+    const translitTitle = isTe(songName) ? transliterateTelugu(songName) : '';
     if (translitTitle) {
       const trTitle = document.createElement('div');
       trTitle.className = 'song-title-translit';
@@ -3056,13 +4125,32 @@ Blank lines separate verses."></textarea>
     return renderNonBilingualSong(songData);
   }
 
-  $('addSong').onclick = () => {
+  $('addSong').onclick = async () => {
+    const name = $('songName').value.trim() || 'Untitled Song';
+    const bilingual = $('bilingual').checked;
+    let te = $('teLyrics').value;
+    let en = $('enLyrics').value;
+
+    // Final safety pass: make sure the two bilingual fields are populated
+    // even if the user clicks Add before the live transliteration timer fires.
+    if (bilingual) {
+      if (hasTelugu(te)) {
+        // Telugu is the source: always refresh the English transliteration.
+        en = await transliterateTeluguPreservingNumbers(te);
+      } else if (en.trim()) {
+        // English/Romanized Telugu is the source: refresh Telugu.
+        showTranslitStatus('Google Input Tools: converting Romanized Telugu to Telugu…');
+        te = normalizeTeluguDigitsToEnglish(await romanizedTeluguToTelugu(en));
+        hideTranslitStatus();
+      }
+    }
+
     const songData = {
-      name: $('songName').value.trim() || 'Untitled Song',
-      bilingual: $('bilingual').checked,
+      name,
+      bilingual,
       single: $('singleLyrics').value,
-      te: $('teLyrics').value,
-      en: $('enLyrics').value
+      te,
+      en
     };
 
     if (songData.bilingual) {
@@ -3082,6 +4170,8 @@ Blank lines separate verses."></textarea>
     $('teLyrics').value = '';
     $('enLyrics').value = '';
     $('bilingual').checked = false;
+    clearTranslitUndo('te');
+    clearTranslitUndo('en');
     syncImportFields();
 
     closeImportDrawer();
@@ -3089,6 +4179,8 @@ Blank lines separate verses."></textarea>
 
   $('clearSong').onclick = () => {
     ['songName', 'singleLyrics', 'teLyrics', 'enLyrics'].forEach(id => $(id).value = '');
+    clearTranslitUndo('te');
+    clearTranslitUndo('en');
   };
 
   let editingPages = [];
