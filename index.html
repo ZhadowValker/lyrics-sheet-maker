@@ -1637,12 +1637,1328 @@ body.import-drawer-open #tools{
 
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+
+/* =========================================================
+   VERSION 1.1 — FOCUS WORKSPACE
+   Visual UX layer only. Existing functionality is preserved.
+   ========================================================= */
+
+:root{
+  --ui-bg:#f4f5f7;
+  --ui-surface:#ffffff;
+  --ui-border:#e4e6eb;
+  --ui-text:#17181c;
+  --ui-muted:#6f7480;
+  --ui-accent:#4f46c8;
+  --ui-accent-soft:#f0efff;
+  --ui-shadow:0 8px 28px rgba(20,24,35,.08);
+  --ui-shadow-hover:0 10px 30px rgba(20,24,35,.12);
+}
+
+html,body{
+  background:var(--ui-bg);
+}
+
+body{
+  color:var(--ui-text);
+  font-weight:700;
+}
+
+/* Keep the lyrics sheet as the visual hero. */
+body.web-view .page{
+  border:1px solid rgba(20,24,35,.06);
+  border-radius:14px;
+  box-shadow:var(--ui-shadow);
+  margin-top:18px;
+  margin-bottom:28px;
+}
+
+body.a4-view .page{
+  border:1px solid rgba(20,24,35,.05);
+  box-shadow:0 10px 34px rgba(20,24,35,.10);
+}
+
+/* Softer title hierarchy. */
+.song-title-te{
+  font-weight:800;
+  letter-spacing:-.2px;
+}
+
+.song-title-en{
+  font-weight:700;
+  color:#59606d;
+}
+
+.lyrics-head{
+  color:var(--ui-accent);
+  font-weight:800;
+}
+
+.section{
+  color:var(--ui-accent);
+  font-weight:800;
+  letter-spacing:.1px;
+}
+
+.row .te,
+.row .en{
+  font-weight:700;
+}
+
+/* ---------------------------------------------------------
+   BRAND
+   --------------------------------------------------------- */
+#appTitle{
+  top:16px;
+  left:20px;
+  gap:9px;
+}
+
+#appTitle .brand-mark{
+  width:40px;
+  height:40px;
+  border-radius:11px;
+  background:var(--ui-text);
+  box-shadow:0 5px 14px rgba(20,24,35,.13);
+}
+
+#appTitle .brand-name{
+  color:var(--ui-text);
+}
+
+/* ---------------------------------------------------------
+   LEFT SONG EXPLORER
+   Default state is a quiet icon rail.
+   Existing Search button expands/collapses the explorer.
+   --------------------------------------------------------- */
+#tools{
+  top:76px;
+  left:18px;
+  bottom:18px;
+  width:52px;
+  gap:10px;
+  align-items:flex-start;
+  padding:8px 5px;
+  border:1px solid var(--ui-border);
+  border-radius:16px;
+  background:rgba(255,255,255,.94);
+  box-shadow:var(--ui-shadow);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transition:
+    width .22s ease,
+    padding .22s ease,
+    transform .25s ease,
+    box-shadow .22s ease;
+}
+
+/* When expanded, the explorer becomes a clean floating panel. */
+#tools:not(.browser-collapsed){
+  width:292px;
+  padding:10px;
+}
+
+#tools.browser-collapsed{
+  width:52px;
+  height:auto;
+  bottom:auto;
+  padding:8px 5px;
+}
+
+#tools .browser-top-row{
+  width:100%;
+  gap:7px;
+  align-items:center;
+}
+
+#tools .browser-top-row .square-add-btn,
+#tools .browser-top-row .square-folder-btn,
+#tools .browser-top-row #browserToggleBtn{
+  width:40px;
+  height:40px;
+  min-width:40px;
+  min-height:40px;
+  border-radius:11px;
+  background:transparent;
+  color:var(--ui-text);
+  box-shadow:none;
+  border:1px solid transparent;
+  transition:background .16s ease, border-color .16s ease, color .16s ease;
+}
+
+#tools .browser-top-row .square-add-btn{
+  font-size:25px;
+  font-weight:500;
+}
+
+#tools .browser-top-row .square-add-btn:hover,
+#tools .browser-top-row .square-folder-btn:hover,
+#tools .browser-top-row #browserToggleBtn:hover{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+  border-color:#dedbff;
+}
+
+#tools.browser-collapsed .folder-search-wrap,
+#tools.browser-collapsed #folderResults{
+  display:none !important;
+}
+
+/* Search icon is the active explorer toggle. */
+#tools #browserToggleBtn{
+  order:3;
+}
+
+#tools .folder-search-wrap{
+  width:100%;
+  margin:2px 0 0;
+}
+
+#tools .folder-search-wrap input{
+  height:42px;
+  border:1px solid var(--ui-border);
+  border-radius:11px;
+  background:#fafbfc;
+  padding:0 12px;
+  color:var(--ui-text);
+  font-weight:600;
+  outline:none;
+  box-shadow:none;
+}
+
+#tools .folder-search-wrap input:focus{
+  border-color:#c9c5ff;
+  box-shadow:0 0 0 3px rgba(79,70,200,.08);
+  background:#fff;
+}
+
+#tools .folder-results{
+  width:100%;
+  max-height:calc(100vh - 190px);
+  margin:0;
+  padding:5px;
+  border:1px solid var(--ui-border);
+  border-radius:12px;
+  background:#fff;
+  box-shadow:none;
+}
+
+#tools .folder-result{
+  padding:10px 9px;
+  border-radius:9px;
+  font-weight:700;
+  color:var(--ui-text);
+}
+
+#tools .folder-result:hover{
+  background:var(--ui-accent-soft);
+}
+
+#tools .folder-result .roman,
+#tools .folder-result small{
+  color:var(--ui-muted);
+}
+
+/* ---------------------------------------------------------
+   RIGHT PRESENTATION CONTROLS
+   Turn the black stack into one quiet control rail.
+   --------------------------------------------------------- */
+#menuTools{
+  top:76px;
+  right:18px;
+}
+
+.hamburger-btn{
+  width:40px;
+  height:40px;
+  border-radius:11px;
+  background:#fff;
+  border:1px solid var(--ui-border);
+  box-shadow:var(--ui-shadow);
+}
+
+.hamburger-btn span{
+  width:18px;
+  height:2px;
+  background:var(--ui-text);
+}
+
+#viewButtonsUnderMenu{
+  margin-top:8px;
+  padding:5px;
+  display:flex !important;
+  flex-direction:column;
+  gap:4px;
+  border:1px solid var(--ui-border);
+  border-radius:14px;
+  background:rgba(255,255,255,.95);
+  box-shadow:var(--ui-shadow);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+.view-buttons-under-menu .view-icon-btn{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  max-width:38px;
+  min-height:38px;
+  border-radius:9px;
+  background:transparent;
+  color:#535866;
+  box-shadow:none;
+  font-size:18px;
+}
+
+.view-buttons-under-menu .view-icon-btn:hover{
+  transform:none;
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+}
+
+.view-buttons-under-menu .view-icon-btn.active{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+}
+
+/* ---------------------------------------------------------
+   EDIT / REMOVE
+   Keep contextual actions, but make them secondary.
+   --------------------------------------------------------- */
+.song-manage{
+  margin:12px auto 6px;
+  gap:6px;
+}
+
+.song-manage button{
+  padding:8px 12px;
+  border-radius:9px;
+  border:1px solid var(--ui-border);
+  background:#fff;
+  color:#4e5360;
+  font-weight:700;
+  box-shadow:none;
+}
+
+.song-manage button:hover{
+  background:#f8f8fb;
+}
+
+.song-manage button.edit{
+  background:#fff;
+  color:var(--ui-accent);
+  border-color:#d8d5ff;
+}
+
+.song-manage button.remove{
+  background:#f8f8f9;
+  color:#686d77;
+  border-color:var(--ui-border);
+}
+
+/* ---------------------------------------------------------
+   DRAWERS / MENUS
+   Consistent modern surface treatment.
+   --------------------------------------------------------- */
+.side-menu,
+#drawer,
+#editDrawer,
+#settings{
+  border:1px solid var(--ui-border);
+  box-shadow:0 18px 50px rgba(20,24,35,.14);
+}
+
+.menu-item{
+  background:#f7f7f9;
+  border:1px solid transparent;
+  color:var(--ui-text);
+}
+
+.menu-item:hover{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+@media(max-width:700px){
+  #appTitle{
+    top:12px;
+    left:12px;
+  }
+
+  #tools{
+    top:68px;
+    left:10px;
+  }
+
+  #menuTools{
+    top:68px;
+    right:10px;
+  }
+
+  body.web-view .page{
+    border-radius:0;
+    border-left:0;
+    border-right:0;
+    margin-top:8px;
+  }
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — COLLAPSIBLE TOOLBARS
+   ========================================================= */
+
+/* LEFT SONG EXPLORER */
+#tools{
+  overflow:visible !important;
+  transition:width .24s ease, padding .24s ease, box-shadow .24s ease;
+}
+
+#tools.browser-collapsed{
+  width:52px !important;
+  padding:8px 5px !important;
+  overflow:visible !important;
+}
+
+#tools.browser-collapsed .folder-search-wrap,
+#tools.browser-collapsed #folderResults{
+  display:none !important;
+}
+
+/* A dedicated small collapse handle is created by JS. */
+.toolbar-collapse-handle{
+  position:absolute;
+  top:50%;
+  right:-10px;
+  transform:translateY(-50%);
+  width:20px;
+  height:44px;
+  border:1px solid var(--ui-border);
+  border-radius:0 10px 10px 0;
+  background:#fff;
+  color:#666b76;
+  box-shadow:0 5px 14px rgba(20,24,35,.08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:20;
+  font-size:12px;
+  font-weight:800;
+}
+
+.toolbar-collapse-handle:hover{
+  color:var(--ui-accent);
+  background:var(--ui-accent-soft);
+}
+
+#tools.browser-collapsed .toolbar-collapse-handle{
+  right:-10px;
+}
+
+#tools:not(.browser-collapsed) .toolbar-collapse-handle{
+  right:-10px;
+}
+
+/* RIGHT PRESENTATION TOOLBAR */
+#viewButtonsUnderMenu{
+  overflow:hidden;
+  transform-origin:top right;
+  transition:max-height .24s ease, opacity .18s ease, transform .24s ease,
+             padding .24s ease, margin .24s ease;
+  max-height:600px;
+  opacity:1;
+  transform:scale(1);
+}
+
+#viewButtonsUnderMenu.toolbar-collapsed{
+  max-height:0 !important;
+  opacity:0;
+  transform:scale(.92);
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+  margin-top:0 !important;
+  border-width:0 !important;
+  pointer-events:none;
+}
+
+/* Keep hamburger visually meaningful when toolbar is closed. */
+.hamburger-btn.toolbar-open{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+  border-color:#dcd9ff;
+}
+
+/* When the explorer is collapsed, keep only its compact actions visible. */
+#tools.browser-collapsed .browser-top-row{
+  flex-direction:column;
+  gap:4px;
+}
+
+#tools.browser-collapsed .browser-top-row .square-add-btn,
+#tools.browser-collapsed .browser-top-row .square-folder-btn,
+#tools.browser-collapsed .browser-top-row #browserToggleBtn{
+  display:flex;
+}
+
+/* Desktop: content gets more breathing room when explorer is collapsed. */
+@media(min-width:701px){
+  body.web-view .page{
+    transition:margin-left .24s ease, margin-right .24s ease;
+  }
+}
+
+/* Mobile toolbar panels should not become wider than the screen. */
+@media(max-width:700px){
+  #tools:not(.browser-collapsed){
+    width:min(292px, calc(100vw - 28px)) !important;
+  }
+
+  #viewButtonsUnderMenu{
+    max-height:520px;
+  }
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — ACTIONS MOVED INTO PRESENTATION TOOLBAR
+   Print + Typography live in the collapsible toolbar.
+   The old sliding Menu panel is removed from the UX.
+   ========================================================= */
+
+#sideMenu{
+  display:none !important;
+}
+
+/* Keep the toolbar a single cohesive control group. */
+#viewButtonsUnderMenu{
+  align-items:center;
+}
+
+#viewButtonsUnderMenu .toolbar-action-btn{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  max-width:38px;
+  min-height:38px;
+  border-radius:9px;
+  border:0;
+  background:transparent;
+  color:#535866;
+  box-shadow:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+#viewButtonsUnderMenu .toolbar-action-btn:hover{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+}
+
+#viewButtonsUnderMenu .toolbar-divider{
+  width:26px;
+  height:1px;
+  background:var(--ui-border);
+  margin:3px auto;
+  flex:0 0 auto;
+}
+
+#viewButtonsUnderMenu .toolbar-action-btn .material-icons{
+  font-size:19px;
+}
+
+/* The hamburger now means "Presentation Tools", not "Menu". */
+.hamburger-btn::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:50%;
+  width:0;
+  height:0;
+}
+
+.hamburger-btn{
+  position:relative;
+}
+
+.hamburger-btn.toolbar-open{
+  background:var(--ui-accent-soft);
+  border-color:#dcd9ff;
+}
+
+.hamburger-btn.toolbar-open span{
+  background:var(--ui-accent);
+}
+
+/* Remove the old side-menu interactions visually even if its
+   legacy JS is still present. */
+body.menu-open #sideMenu{
+  display:none !important;
+}
+
+</style>
+<style>
+
+/* V1.1 — ICON-ONLY PRESENTATION TOOLBAR */
+#viewButtonsUnderMenu .toolbar-action-btn{
+  position:relative;
+  font-size:0;
+  padding:0;
+}
+
+#viewButtonsUnderMenu .toolbar-action-btn .material-icons{
+  font-size:19px;
+  line-height:1;
+}
+
+#viewButtonsUnderMenu .toolbar-action-btn:hover{
+  transform:none;
+}
+
+/* Accessible tooltip on hover/focus. */
+#viewButtonsUnderMenu .toolbar-action-btn::after{
+  content:attr(title);
+  position:absolute;
+  right:46px;
+  top:50%;
+  transform:translateY(-50%);
+  white-space:nowrap;
+  padding:6px 9px;
+  border-radius:7px;
+  background:#17181c;
+  color:#fff;
+  font:700 11px/1.2 var(--en-font);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s ease;
+  z-index:10020;
+}
+
+#viewButtonsUnderMenu .toolbar-action-btn:hover::after,
+#viewButtonsUnderMenu .toolbar-action-btn:focus-visible::after{
+  opacity:1;
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — CLEAN ACTIVE STATES + A4 / WEB TOGGLE
+   ========================================================= */
+
+/* Never use the heavy gray selected state from Version 1.
+   Selected controls use the same light accent treatment. */
+#viewButtonsUnderMenu .view-icon-btn.active,
+body.a4-view #viewModeBtn,
+body.web-view #webViewBtn,
+body.a4-view #viewModeBtn:hover,
+body.web-view #webViewBtn:hover,
+#fullViewBtn.active,
+#viewButtonsUnderMenu .orientation-control.active,
+#viewButtonsUnderMenu .verse-separator-control.active{
+  background:var(--ui-accent-soft) !important;
+  color:var(--ui-accent) !important;
+  box-shadow:none !important;
+}
+
+/* A4/Web are a single segmented toggle. */
+.view-mode-toggle{
+  display:flex;
+  align-items:center;
+  width:76px;
+  height:38px;
+  padding:3px;
+  gap:2px;
+  border:1px solid var(--ui-border);
+  border-radius:11px;
+  background:#f7f7f9;
+  box-shadow:none;
+}
+
+.view-mode-toggle .view-icon-btn{
+  flex:1 1 0;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:32px;
+  min-height:32px;
+  border-radius:8px;
+  background:transparent !important;
+  color:#777d88 !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
+
+.view-mode-toggle .view-icon-btn:hover{
+  background:#eeeef3 !important;
+  color:#4f5561 !important;
+}
+
+.view-mode-toggle .view-icon-btn.active,
+.view-mode-toggle .view-icon-btn.is-selected,
+body.a4-view .view-mode-toggle #viewModeBtn,
+body.web-view .view-mode-toggle #webViewBtn{
+  background:#fff !important;
+  color:var(--ui-accent) !important;
+  box-shadow:0 2px 6px rgba(20,24,35,.10) !important;
+}
+
+/* Make the toggle icons slightly smaller and balanced. */
+.view-mode-toggle .material-icons{
+  font-size:18px !important;
+}
+
+/* A subtle separator after the toggle keeps the toolbar grouped. */
+.view-mode-toggle + .toolbar-divider{
+  margin-top:5px !important;
+  margin-bottom:5px !important;
+}
+
+/* Do not show the old dark selected background anywhere in this toolbar. */
+#viewButtonsUnderMenu .view-icon-btn,
+#viewButtonsUnderMenu .toolbar-action-btn{
+  transition:background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+
+</style>
+<style>
+
+/* V1.1 — VERTICAL A4 / WEB TOGGLE */
+.view-mode-toggle{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  justify-content:center !important;
+  width:38px !important;
+  height:76px !important;
+  padding:3px !important;
+  gap:2px !important;
+  border-radius:11px !important;
+}
+
+.view-mode-toggle .view-icon-btn{
+  flex:1 1 0 !important;
+  width:32px !important;
+  min-width:32px !important;
+  max-width:32px !important;
+  height:auto !important;
+  min-height:0 !important;
+  border-radius:8px !important;
+}
+
+.view-mode-toggle .material-icons{
+  font-size:17px !important;
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — TRUE FULL VIEW / WORSHIP MODE
+   Full View is intentionally separate from the toolbar.
+   When active, every application toolbar is hidden.
+   ========================================================= */
+
+/* Full View button is separated visually from the A4/Web + tools. */
+#fullViewBtn{
+  margin-bottom:5px !important;
+}
+
+#viewButtonsUnderMenu{
+  gap:6px;
+}
+
+/* Full View active state remains subtle when the toolbar is open,
+   but the toolbar itself disappears once Full View is active. */
+#fullViewBtn.active{
+  background:var(--ui-accent-soft) !important;
+  color:var(--ui-accent) !important;
+  box-shadow:none !important;
+}
+
+/* TRUE FULL VIEW:
+   Hide all application chrome, including the right toolbar,
+   left explorer, brand, song management, and drawers. */
+body.full-view #appTitle,
+body.full-view #tools,
+body.full-view #menuTools,
+body.full-view #viewButtonsUnderMenu,
+body.full-view #drawer,
+body.full-view #settings,
+body.full-view #editDrawer,
+body.full-view #sideMenu,
+body.full-view .song-manage{
+  display:none !important;
+}
+
+/* Full View becomes a clean presentation canvas. */
+body.full-view{
+  background:#e9e9e9 !important;
+  overflow:auto !important;
+}
+
+body.full-view .page{
+  margin:12mm auto !important;
+  box-shadow:0 8px 30px rgba(20,24,35,.12);
+}
+
+/* A tiny invisible-safe exit area is not used:
+   Full View is exited through the existing keyboard/control logic.
+   No toolbar remains visible in the presentation view. */
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — FULL VIEW + HAMBURGER REMAIN VISIBLE
+   Full View is a permanent presentation control.
+   The collapsible tool stack disappears in Full View.
+   ========================================================= */
+
+#fullViewBtn.full-view-standalone{
+  position:absolute;
+  top:122px;
+  right:18px;
+  z-index:10001;
+  width:40px;
+  height:40px;
+  min-width:40px;
+  min-height:40px;
+  border:1px solid var(--ui-border);
+  border-radius:11px;
+  background:#fff;
+  color:#535866;
+  box-shadow:var(--ui-shadow);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+
+#fullViewBtn.full-view-standalone:hover{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+}
+
+#fullViewBtn.full-view-standalone .material-icons{
+  font-size:19px;
+}
+
+/* Full View active: use the same button as the exit control. */
+body.full-view #fullViewBtn.full-view-standalone{
+  background:var(--ui-accent-soft) !important;
+  color:var(--ui-accent) !important;
+  border-color:#dcd9ff;
+}
+
+/* Hamburger stays visible in Full View. */
+body.full-view #menuTools{
+  display:block !important;
+}
+
+body.full-view .hamburger-btn{
+  display:flex !important;
+}
+
+/* The collapsible toolbar itself stays hidden. */
+body.full-view #viewButtonsUnderMenu{
+  display:none !important;
+}
+
+/* Other application chrome remains hidden. */
+body.full-view #appTitle,
+body.full-view #tools,
+body.full-view #drawer,
+body.full-view #settings,
+body.full-view #editDrawer,
+body.full-view #sideMenu,
+body.full-view .song-manage{
+  display:none !important;
+}
+
+body.full-view{
+  background:#e9e9e9 !important;
+  overflow:auto !important;
+}
+
+body.full-view .page{
+  margin:12mm auto !important;
+  box-shadow:0 8px 30px rgba(20,24,35,.12);
+}
+
+/* In Full View the hamburger is intentionally non-expanding:
+   it remains a visual/exit anchor while the tool stack stays hidden. */
+body.full-view .hamburger-btn{
+  cursor:default;
+}
+
+@media(max-width:700px){
+  #fullViewBtn.full-view-standalone{
+    top:114px;
+    right:10px;
+  }
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — UNIFIED RIGHT TOOLBAR
+   ========================================================= */
+#menuTools{
+  display:flex !important;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:6px;
+  width:52px;
+  box-sizing:border-box;
+  border:1px solid var(--ui-border);
+  border-radius:15px;
+  background:rgba(255,255,255,.96);
+  box-shadow:var(--ui-shadow);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+#menuTools .hamburger-btn{
+  flex:0 0 auto;
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
+#menuTools .hamburger-btn:hover,
+#menuTools .hamburger-btn.toolbar-open{
+  background:var(--ui-accent-soft);
+}
+
+#menuTools .hamburger-btn span{
+  background:#535866;
+}
+
+#menuTools .hamburger-btn.toolbar-open span{
+  background:var(--ui-accent);
+}
+
+#menuTools .permanent-view-control{
+  width:100%;
+  padding:5px 0;
+  display:flex;
+  justify-content:center;
+  border-top:1px solid var(--ui-border);
+  border-bottom:1px solid var(--ui-border);
+}
+
+#menuTools .full-view-standalone{
+  position:static !important;
+  top:auto !important;
+  right:auto !important;
+  width:38px !important;
+  height:38px !important;
+  min-width:38px !important;
+  min-height:38px !important;
+  border:0 !important;
+  border-radius:9px !important;
+  background:transparent !important;
+  color:#535866 !important;
+  box-shadow:none !important;
+}
+
+#menuTools .full-view-standalone:hover{
+  background:var(--ui-accent-soft) !important;
+  color:var(--ui-accent) !important;
+}
+
+body.full-view #menuTools{
+  display:flex !important;
+}
+
+body.full-view #menuTools .hamburger-btn{
+  display:flex !important;
+}
+
+body.full-view #menuTools .full-view-standalone{
+  display:flex !important;
+  background:var(--ui-accent-soft) !important;
+  color:var(--ui-accent) !important;
+}
+
+body.full-view #menuTools #viewButtonsUnderMenu{
+  display:none !important;
+}
+
+#menuTools #viewButtonsUnderMenu{
+  width:100%;
+  margin:0;
+  padding-top:1px;
+  border:0;
+  box-shadow:none;
+  background:transparent;
+}
+
+@media(max-width:700px){
+  #menuTools{
+    right:10px;
+  }
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — TYPOGRAPHY SLIDER UX
+   Cleaner controls: value pill + modern range track/thumb.
+   ========================================================= */
+
+#settings .range{
+  display:grid !important;
+  grid-template-columns:1fr auto !important;
+  align-items:center !important;
+  gap:10px !important;
+  width:100% !important;
+  margin-top:7px !important;
+}
+
+#settings .range input[type="range"]{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  width:100% !important;
+  height:6px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:linear-gradient(
+    to right,
+    var(--ui-accent) 0%,
+    var(--ui-accent) var(--slider-progress,50%),
+    #e6e7ec var(--slider-progress,50%),
+    #e6e7ec 100%
+  ) !important;
+  outline:none !important;
+  cursor:pointer !important;
+}
+
+#settings .range input[type="range"]::-webkit-slider-runnable-track{
+  height:6px;
+  border-radius:999px;
+  background:transparent;
+}
+
+#settings .range input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:18px;
+  height:18px;
+  margin-top:-6px;
+  border:3px solid #fff;
+  border-radius:50%;
+  background:var(--ui-accent);
+  box-shadow:0 2px 7px rgba(20,24,35,.20);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+
+#settings .range input[type="range"]:hover::-webkit-slider-thumb{
+  transform:scale(1.08);
+  box-shadow:0 3px 9px rgba(20,24,35,.25);
+}
+
+#settings .range input[type="range"]:focus-visible::-webkit-slider-thumb{
+  box-shadow:0 0 0 4px rgba(79,70,200,.16),0 2px 7px rgba(20,24,35,.20);
+}
+
+#settings .range input[type="range"]::-moz-range-track{
+  height:6px;
+  border-radius:999px;
+  background:#e6e7ec;
+}
+
+#settings .range input[type="range"]::-moz-range-progress{
+  height:6px;
+  border-radius:999px;
+  background:var(--ui-accent);
+}
+
+#settings .range input[type="range"]::-moz-range-thumb{
+  width:12px;
+  height:12px;
+  border:3px solid #fff;
+  border-radius:50%;
+  background:var(--ui-accent);
+  box-shadow:0 2px 7px rgba(20,24,35,.20);
+}
+
+#settings .range output{
+  min-width:48px;
+  height:30px;
+  padding:0 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #dedfe5;
+  border-radius:8px;
+  background:#f7f7f9;
+  color:#454a55;
+  font:800 12px/1 var(--en-font);
+  box-sizing:border-box;
+}
+
+#settings label:has(.range){
+  padding-bottom:3px;
+}
+
+#settings label:has(.range) + label:has(.range){
+  margin-top:2px;
+}
+
+/* Give typography controls their own quiet grouping. */
+#settings .range-group-label{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid var(--ui-border);
+}
+
+/* Better checkbox controls, while retaining existing inputs/handlers. */
+#settings .separator-option{
+  display:grid !important;
+  grid-template-columns:1fr auto !important;
+  align-items:center !important;
+  gap:8px !important;
+  padding:11px 0 !important;
+  border-top:1px solid #ececf0 !important;
+}
+
+#settings .separator-option span{
+  flex:initial !important;
+  font-weight:800;
+}
+
+#settings .separator-option small{
+  grid-column:1 / -1 !important;
+  width:auto !important;
+  margin-top:-3px;
+  color:var(--ui-muted);
+}
+
+#settings .separator-option input[type="checkbox"]{
+  width:18px !important;
+  height:18px !important;
+  margin:0 !important;
+  accent-color:var(--ui-accent);
+}
+
+</style>
+<style>
+
+/* =========================================================
+   V1.1 — TYPOGRAPHY DRAWER / TOOLBAR-STYLE UX
+   Make settings feel like the same design system as the
+   collapsible presentation toolbar.
+   ========================================================= */
+
+#settings{
+  width:min(390px,94vw) !important;
+  padding:0 !important;
+  border:1px solid var(--ui-border) !important;
+  border-radius:16px 0 0 16px !important;
+  background:#fff !important;
+  box-shadow:-16px 0 45px rgba(20,24,35,.13) !important;
+  overflow:hidden !important;
+}
+
+#settings .drawer-head{
+  min-height:58px;
+  padding:0 16px !important;
+  margin:0 !important;
+  border-bottom:1px solid var(--ui-border);
+  background:rgba(255,255,255,.96);
+  display:flex;
+  align-items:center;
+}
+
+#settings .drawer-head span{
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:-.2px;
+  color:var(--ui-text);
+}
+
+#settings .drawer-head span::before{
+  content:"tune";
+  font-family:"Material Icons";
+  font-size:19px;
+  vertical-align:-4px;
+  margin-right:8px;
+  color:var(--ui-accent);
+}
+
+#settings .drawer-head .icon-btn{
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  border:1px solid transparent;
+  background:transparent;
+  color:#666b76;
+  font-size:20px;
+}
+
+#settings .drawer-head .icon-btn:hover{
+  background:var(--ui-accent-soft);
+  color:var(--ui-accent);
+}
+
+/* Inner settings content. */
+#settings > label{
+  display:block;
+  margin:0 16px !important;
+  padding:14px 0 !important;
+  border-bottom:1px solid #ececf0;
+  color:var(--ui-text);
+  font-weight:800;
+}
+
+#settings > label:last-child{
+  border-bottom:0;
+}
+
+/* Turn selects and font inputs into the same compact surfaces
+   used by the toolbars. */
+#settings select,
+#settings input[type="text"],
+#settings input:not([type]),
+#settings input[list]{
+  width:100% !important;
+  height:40px !important;
+  margin-top:7px !important;
+  box-sizing:border-box;
+  border:1px solid var(--ui-border) !important;
+  border-radius:10px !important;
+  background:#f8f8fa !important;
+  color:var(--ui-text) !important;
+  padding:0 11px !important;
+  font:700 13px/1 var(--en-font) !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+
+#settings select:focus,
+#settings input[list]:focus{
+  background:#fff !important;
+  border-color:#c9c5ff !important;
+  box-shadow:0 0 0 3px rgba(79,70,200,.08) !important;
+}
+
+/* Small explanatory text matches the muted toolbar language. */
+#settings .font-status,
+#settings small{
+  color:var(--ui-muted) !important;
+  font-size:11px !important;
+  line-height:1.4;
+}
+
+/* Group the two font controls. */
+#settings label:has(#teFont),
+#settings label:has(#enFont){
+  padding-bottom:12px !important;
+}
+
+/* Range controls remain from the previous slider UX but sit in
+   a consistent toolbar-like section. */
+#settings label:has(.range){
+  padding-top:13px !important;
+  padding-bottom:13px !important;
+}
+
+#settings label:has(.range) .range{
+  margin-top:9px !important;
+}
+
+/* Section-like separation before the presentation options. */
+#settings label:has(#verseSeparator){
+  margin-top:3px !important;
+  padding-top:16px !important;
+}
+
+#settings label:has(#showVerseNumbers){
+  border-bottom:0 !important;
+}
+
+/* Toggle switches for boolean options. */
+#settings .separator-option{
+  display:grid !important;
+  grid-template-columns:1fr 44px !important;
+  align-items:center !important;
+  gap:8px !important;
+}
+
+#settings .separator-option input[type="checkbox"]{
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  position:relative;
+  width:40px !important;
+  height:22px !important;
+  border-radius:999px !important;
+  border:1px solid #d8d9df !important;
+  background:#e7e8ec !important;
+  cursor:pointer;
+  transition:background .16s ease,border-color .16s ease;
+}
+
+#settings .separator-option input[type="checkbox"]::after{
+  content:"";
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 1px 4px rgba(20,24,35,.20);
+  transition:transform .16s ease;
+}
+
+#settings .separator-option input[type="checkbox"]:checked{
+  background:var(--ui-accent) !important;
+  border-color:var(--ui-accent) !important;
+}
+
+#settings .separator-option input[type="checkbox"]:checked::after{
+  transform:translateX(18px);
+}
+
+/* Settings drawer opens like a premium tool panel rather than a
+   plain form. */
+#settings.open{
+  animation:settingsPanelIn .20s ease-out;
+}
+
+@keyframes settingsPanelIn{
+  from{transform:translateX(105%);opacity:.85}
+  to{transform:translateX(0);opacity:1}
+}
+
+</style>
 </head>
 <body class="web-view">
 
 
 
-<div id="tools">
+<div id="tools" class="browser-collapsed">
   <div class="browser-top-row">
     <button id="openImport"
             class="square-add-btn"
@@ -1700,12 +3016,20 @@ body.import-drawer-open #tools{
        hidden>
 
 <div id="menuTools">
-  <button id="hamburgerBtn" class="hamburger-btn" aria-label="Open menu" title="Menu">
+  <button id="hamburgerBtn" class="hamburger-btn" aria-label="Presentation tools" title="Presentation tools">
     <span></span><span></span><span></span>
   </button>
 
-  <div id="viewButtonsUnderMenu" class="view-buttons-under-menu" aria-label="View controls">
-    <button id="fullViewBtn" class="view-icon-btn" title="Full View" aria-label="Full View"><span class="material-icons">fullscreen</span></button>
+  <!-- Permanent Full View control: remains visible in Full View. -->
+  <div class="permanent-view-control">
+    <button id="fullViewBtn" class="view-icon-btn full-view-standalone"
+            title="Full View" aria-label="Full View">
+      <span class="material-icons">fullscreen</span>
+    </button>
+  </div>
+
+  <!-- Collapsible presentation controls. -->
+  <div id="viewButtonsUnderMenu" class="view-buttons-under-menu" aria-label="Presentation controls">
     <button id="viewModeBtn" class="view-icon-btn" title="A4 View" aria-label="A4 View"><span class="material-icons">description</span></button>
     <button id="webViewBtn" class="view-icon-btn" title="Webpage View" aria-label="Webpage View"><span class="material-icons">language</span></button>
     <button id="zoomInBtn" class="view-icon-btn zoom-control" title="Zoom In" aria-label="Zoom In"><span class="material-icons">add</span></button>
@@ -1725,8 +3049,8 @@ body.import-drawer-open #tools{
     <button id="closeMenu" class="icon-btn" title="Close">×</button>
   </div>
   <div class="menu-items">
-    <button id="menuPrint" class="menu-item"><span class="material-icons">print</span> <span>Print / Save PDF</span></button>
-    <button id="menuTypography" class="menu-item"><span class="material-icons">tune</span> <span>Typography</span></button>
+    <button id="menuPrint" class="menu-item"><span class="material-icons">print</span></button>
+    <button id="menuTypography" class="menu-item"><span class="material-icons">tune</span></button>
   </div>
 </aside>
 
@@ -4569,6 +5893,232 @@ Blank lines separate verses."></textarea>
   syncImportFields();
   syncEditFields();
   loadOnlineGoogleFonts();
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   V1.1 — COLLAPSIBLE TOOLBAR CONTROLLER
+   ========================================================= */
+(function(){
+  function setupCollapsibleToolbars(){
+    const left = document.getElementById('tools');
+    const right = document.getElementById('viewButtonsUnderMenu');
+    const menu = document.querySelector('.hamburger-btn');
+
+    if(left && !left.querySelector('.toolbar-collapse-handle')){
+      const handle = document.createElement('button');
+      handle.type = 'button';
+      handle.className = 'toolbar-collapse-handle';
+      handle.setAttribute('aria-label','Collapse song explorer');
+      handle.innerHTML = '‹';
+
+      handle.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        left.classList.toggle('browser-collapsed');
+
+        const collapsed = left.classList.contains('browser-collapsed');
+        handle.innerHTML = collapsed ? '›' : '‹';
+        handle.setAttribute(
+          'aria-label',
+          collapsed ? 'Expand song explorer' : 'Collapse song explorer'
+        );
+      });
+
+      left.appendChild(handle);
+    }
+
+    if(right){
+      right.classList.add('toolbar-collapsed');
+
+      if(menu && !menu.dataset.toolbarCollapseBound){
+        menu.dataset.toolbarCollapseBound = '1';
+
+        menu.addEventListener('click', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+
+          if(document.body.classList.contains('full-view')){
+          return;
+        }
+
+        right.classList.toggle('toolbar-collapsed');
+          menu.classList.toggle(
+            'toolbar-open',
+            !right.classList.contains('toolbar-collapsed')
+          );
+        });
+      }
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', setupCollapsibleToolbars);
+  }else{
+    setupCollapsibleToolbars();
+  }
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   V1.1 — MOVE PRINT / TYPOGRAPHY INTO TOOLBAR
+   Existing button IDs are retained, so existing handlers
+   continue to work without rewriting application logic.
+   ========================================================= */
+(function(){
+  function moveMenuActionsIntoToolbar(){
+    const toolbar = document.getElementById('viewButtonsUnderMenu');
+    const printBtn = document.getElementById('menuPrint');
+    const typographyBtn = document.getElementById('menuTypography');
+    const sideMenu = document.getElementById('sideMenu');
+
+    if(!toolbar) return;
+
+    if(printBtn && printBtn.parentElement !== toolbar){
+      printBtn.classList.add('toolbar-action-btn');
+      printBtn.title = 'Print / Save PDF';
+      printBtn.setAttribute('aria-label','Print / Save PDF');
+
+      const divider = document.createElement('div');
+      divider.className = 'toolbar-divider';
+      divider.setAttribute('aria-hidden','true');
+
+      toolbar.appendChild(divider);
+      toolbar.appendChild(printBtn);
+    }
+
+    if(typographyBtn && typographyBtn.parentElement !== toolbar){
+      typographyBtn.classList.add('toolbar-action-btn');
+      typographyBtn.title = 'Typography';
+      typographyBtn.setAttribute('aria-label','Typography');
+      toolbar.appendChild(typographyBtn);
+    }
+
+    if(sideMenu){
+      sideMenu.setAttribute('aria-hidden','true');
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', moveMenuActionsIntoToolbar);
+  }else{
+    moveMenuActionsIntoToolbar();
+  }
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   V1.1 — A4 / WEB SEGMENTED TOGGLE
+   Wrap the existing buttons so their original click handlers
+   and IDs remain untouched.
+   ========================================================= */
+(function(){
+  function setupViewToggle(){
+    const a4 = document.getElementById('viewModeBtn');
+    const web = document.getElementById('webViewBtn');
+
+    if(!a4 || !web || a4.parentElement !== web.parentElement) return;
+    if(a4.parentElement.classList.contains('view-mode-toggle')) return;
+
+    const parent = a4.parentElement;
+    const toggle = document.createElement('div');
+    toggle.className = 'view-mode-toggle';
+    toggle.setAttribute('role','group');
+    toggle.setAttribute('aria-label','View mode');
+
+    parent.insertBefore(toggle, a4);
+    toggle.appendChild(a4);
+    toggle.appendChild(web);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', setupViewToggle);
+  }else{
+    setupViewToggle();
+  }
+})();
+</script>
+
+
+<script>
+/* V1.1 — Full View exit via Escape */
+(function(){
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    if(!document.body.classList.contains('full-view')) return;
+
+    const btn = document.getElementById('fullViewBtn');
+    if(btn) btn.click();
+  });
+})();
+</script>
+
+
+<script>
+/* V1.1 — keep Full View button visible and update its tooltip */
+(function(){
+  function bindFullViewLabel(){
+    const btn = document.getElementById('fullViewBtn');
+    if(!btn || btn.dataset.fullViewLabelBound) return;
+    btn.dataset.fullViewLabelBound = '1';
+
+    const observer = new MutationObserver(function(){
+      const active = document.body.classList.contains('full-view');
+      btn.title = active ? 'Exit Full View' : 'Full View';
+      btn.setAttribute('aria-label', active ? 'Exit Full View' : 'Full View');
+      const icon = btn.querySelector('.material-icons');
+      if(icon) icon.textContent = active ? 'fullscreen_exit' : 'fullscreen';
+    });
+
+    observer.observe(document.body, {attributes:true, attributeFilter:['class']});
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bindFullViewLabel);
+  }else{
+    bindFullViewLabel();
+  }
+})();
+</script>
+
+
+<script>
+/* V1.1 — live slider progress indicator */
+(function(){
+  function setupTypographySliders(){
+    const ids = ['teSize','enSize','gap','lineGap'];
+
+    ids.forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el || el.dataset.sliderUxBound) return;
+
+      el.dataset.sliderUxBound = '1';
+
+      const update = ()=>{
+        const min = Number(el.min || 0);
+        const max = Number(el.max || 100);
+        const value = Number(el.value || min);
+        const pct = max === min ? 0 : ((value-min)/(max-min))*100;
+        el.style.setProperty('--slider-progress', pct + '%');
+      };
+
+      update();
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', setupTypographySliders);
+  }else{
+    setupTypographySliders();
+  }
 })();
 </script>
 
