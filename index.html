@@ -2459,34 +2459,36 @@ Blank lines separate verses."></textarea>
   };
 
   // Common conjuncts that must be treated as a single phonetic unit.
+  // Conjuncts are stored WITHOUT their inherent "a".
+  // The following Gunintham/vowel sign is processed separately.
   const TELUGU_CONJUNCTS = {
-    'క్ష':['ksha','kṣa'],
-    'జ్ఞ':['gnya','jna','jña'],
-    'శ్ర':['shra'],
-    'శ్వ':['shva'],
-    'స్త':['sta'],
-    'స్థ':['stha'],
-    'స్మ':['sma'],
-    'స్న':['sna'],
-    'స్ప':['spa'],
-    'స్వ':['sva'],
-    'త్ర':['tra'],
-    'థ్ర':['thra'],
-    'ద్ర':['dra'],
-    'ధ్ర':['dhra'],
-    'ప్ర':['pra'],
-    'బ్ర':['bra'],
-    'భ్ర':['bhra'],
-    'క్ర':['kra'],
-    'గ్ర':['gra'],
-    'ఘ్ర':['ghra'],
-    'క్ల':['kla'],
-    'గ్ల':['gla'],
-    'ప్ల':['pla'],
-    'బ్ల':['bla'],
-    'మ్ర':['mra'],
-    'ర్య':['rya'],
-    'వ్య':['vya']
+    'క్ష':['ksh','kṣ'],
+    'జ్ఞ':['gny','jn','jñ'],
+    'శ్ర':['shr'],
+    'శ్వ':['shv'],
+    'స్త':['st'],
+    'స్థ':['sth'],
+    'స్మ':['sm'],
+    'స్న':['sn'],
+    'స్ప':['sp'],
+    'స్వ':['sv'],
+    'త్ర':['tr'],
+    'థ్ర':['thr'],
+    'ద్ర':['dr'],
+    'ధ్ర':['dhr'],
+    'ప్ర':['pr'],
+    'బ్ర':['br'],
+    'భ్ర':['bhr'],
+    'క్ర':['kr'],
+    'గ్ర':['gr'],
+    'ఘ్ర':['ghr'],
+    'క్ల':['kl'],
+    'గ్ల':['gl'],
+    'ప్ల':['pl'],
+    'బ్ల':['bl'],
+    'మ్ర':['mr'],
+    'ర్య':['ry'],
+    'వ్య':['vy']
   };
 
   const TELUGU_SIGNS = {
@@ -2524,6 +2526,7 @@ Blank lines separate verses."></textarea>
 
   // The user's approved worship-lyrics spellings override generic phonetics.
   const PREFERRED_TELUGU_ROMAN = {
+    "తండ్రి":"Tandri","త్రిత్వ":"Tritva",
     "స్తోత్రమయా":"Sthothramayaa","నా":"Naa","యేసయ్యా":"Yesayyaa",
     "స్తుతులు":"Sthuthulu","నీకే":"Neeke","చెల్లింతు":"Chellinthu",
     "అధిక":"Adhika","స్తోత్రము":"Sthothramu","నొందదగిన":"Nondadagina",
@@ -2621,9 +2624,32 @@ Blank lines separate verses."></textarea>
       }
 
       if(conjunct){
-        const base=TELUGU_CONJUNCTS[conjunct][0];
-        out+=base;
-        i+=conjunct.length;
+        const base = TELUGU_CONJUNCTS[conjunct][0];
+        out += base;
+        i += conjunct.length;
+
+        // The conjunct itself has no vowel. Process the following
+        // Gunintham/vowel sign, anusvara, or visarga normally.
+        if(word[i] && TELUGU_MATRA_CANDIDATES[word[i]]){
+          out += TELUGU_MATRA_CANDIDATES[word[i]][0];
+          i++;
+          continue;
+        }
+
+        if(word[i] === 'ం'){
+          out += teluguAnusvaraCandidates(word[i + 1] || '')[0];
+          i++;
+          continue;
+        }
+
+        if(word[i] === 'ః'){
+          out += 'h';
+          i++;
+          continue;
+        }
+
+        // No vowel sign means the normal inherent "a".
+        out += 'a';
         continue;
       }
 
@@ -2665,9 +2691,16 @@ Blank lines separate verses."></textarea>
         continue;
       }
 
-      // Anusvara after an independent vowel or standalone.
+      // Context-sensitive anusvara.
       if(ch==='ం'){
-        out+=teluguAnusvaraCandidates(word[i+1]||'')[0];
+        const next = word[i + 1] || '';
+
+        if(/[టఠడఢణ]/.test(next)){
+          out += 'n';
+        }else{
+          out += teluguAnusvaraCandidates(next)[0];
+        }
+
         i++;
         continue;
       }
@@ -2750,6 +2783,33 @@ Blank lines separate verses."></textarea>
       .map(transliterateTeluguLine)
       .join('\n')
       .trim();
+  }
+
+  // Transliteration regression tests for the approved spellings.
+  function runTeluguTransliterationRegressionTests(){
+    const tests = {
+      'తండ్రి':'Tandri',
+      'దేవా':'Daevaa',
+      'యేసు':'Yaesu',
+      'రాజా':'Raajaa',
+      'ఆత్మ':'Aatma',
+      'స్తుతి':'Sthuthi',
+      'స్తోత్రము':'Sthothramu',
+      'త్రిత్వ':'Tritva'
+    };
+
+    const failures = [];
+    Object.entries(tests).forEach(([input, expected])=>{
+      const actual = transliterateTelugu(input);
+      if(actual !== expected){
+        failures.push({input, expected, actual});
+      }
+    });
+
+    if(failures.length){
+      console.warn('Telugu transliteration regression tests:', failures);
+    }
+    return failures;
   }
 
   // High-quality Romanized Telugu -> Telugu script conversion.
